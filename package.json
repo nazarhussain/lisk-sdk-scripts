@@ -15,5 +15,12 @@
   "bugs": {
     "url": "https://github.com/nazarhussain/lisdk-sdk-scripts/issues"
   },
-  "homepage": "https://github.com/nazarhussain/lisdk-sdk-scripts#readme"
+  "homepage": "https://github.com/nazarhussain/lisdk-sdk-scripts#readme",
+  "dependencies": {
+    "@liskhq/lisk-transactions": "^3.0.2"
+  },
+  "engines": {
+	"node": ">=12.13.0 <=12",
+	"npm": ">=6.12.0"
+  }
 }
