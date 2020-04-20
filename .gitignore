@@ -102,3 +102,6 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Sample accounts
+benchmark_txpool/sample_accounts.json

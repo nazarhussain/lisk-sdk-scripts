@@ -1,0 +1,19 @@
+{
+  "name": "lisk-sdk-scripts",
+  "version": "1.0.0",
+  "description": "Some tests scripts developed over lisk-sdk",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/nazarhussain/lisdk-sdk-scripts.git"
+  },
+  "author": "Nazar Hussain",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nazarhussain/lisdk-sdk-scripts/issues"
+  },
+  "homepage": "https://github.com/nazarhussain/lisdk-sdk-scripts#readme"
+}
