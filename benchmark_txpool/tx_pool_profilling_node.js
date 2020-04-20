@@ -1,5 +1,5 @@
-const { createApplication } = require('./app');
-const { sleep } = require('../../utils.es6');
+const { createApplication } = require('../nodes/app');
+const { sleep } = require('../utils.js');
 
 /* eslint-disable no-underscore-dangle */
 

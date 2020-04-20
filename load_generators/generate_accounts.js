@@ -6,7 +6,7 @@ const {
 	networkIdentifier,
 	client,
 	waitForBlock,
-} = require('../utils.es6');
+} = require('../utils.js');
 const {
 	transfer,
 	utils: { convertLSKToBeddows },

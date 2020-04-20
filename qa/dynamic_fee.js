@@ -3,26 +3,26 @@ const {
 	transfer,
 	TransferTransaction,
 	utils: { convertLSKToBeddows },
-} = require('../elements/lisk-transactions');
+} = require('@liskhq/lisk-transactions');
 const {
 	getNetworkIdentifier,
 	getPrivateAndPublicKeyFromPassphrase,
 	getRandomBytes,
 	getAddressFromPassphrase,
-} = require('../elements/lisk-cryptography');
-const { APIClient } = require('../elements/lisk-api-client');
+} = require('@liskhq/lisk-cryptography');
+const { APIClient } = require('@liskhq/lisk-api-client');
 
-const genesisBlock = require('../framework/test/fixtures/config/devnet/genesis_block');
+const genesisBlock = require('lisk-framework/test/fixtures/config/devnet/genesis_block.json');
 const {
 	app: {
 		node: {
 			forging: { delegates, defaultPassword },
 		},
 	},
-} = require('../framework/test/fixtures/config/devnet/config');
+} = require('lisk-framework/test/fixtures/config/devnet/config.json');
 const {
 	genesis: genesisAccount,
-} = require('../framework/test/fixtures/accounts');
+} = require('lisk-framework/test/fixtures/accounts');
 
 const networkIdentifier = getNetworkIdentifier(
 	genesisBlock.payloadHash,

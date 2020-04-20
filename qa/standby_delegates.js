@@ -11,13 +11,13 @@ const {
 	calcRound,
 	startOfRound,
 	getLastBlock,
-} = require('./utils.es6');
+} = require('../utils.js');
 const {
 	registerDelegate,
 	castVotes,
 	transfer,
 	utils: { convertLSKToBeddows },
-} = require('../elements/lisk-transactions');
+} = require('@liskhq/lisk-transactions');
 
 const getForgetList = async () =>
 	JSON.parse(await storage.entities.ConsensusState.getKey('dpos:forgersList'));

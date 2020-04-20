@@ -3,7 +3,7 @@ const {
 	getRandomAccount,
 	getAccountNonce,
 	networkIdentifier,
-} = require('../utils.es6');
+} = require('../utils.js');
 const accounts = require('./sample_accounts.json');
 
 const {

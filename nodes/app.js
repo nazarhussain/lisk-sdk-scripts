@@ -3,7 +3,7 @@ const {
 	genesisBlockDevnet,
 	configDevnet,
 	configurator,
-} = require('../../../sdk');
+} = require('lisk-sdk');
 
 const myConfig = {
 	components: {

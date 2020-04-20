@@ -4,16 +4,16 @@ const {
 	genesisAccount,
 	sleep,
 	waitForBlock,
-} = require('./utils.es6');
+} = require('../utils.js');
 
 const {
 	transfer,
 	TransferTransaction,
-} = require('../elements/lisk-transactions');
+} = require('@liskhq/lisk-transactions');
 const {
 	getPrivateAndPublicKeyFromPassphrase,
 	getRandomBytes,
-} = require('../elements/lisk-cryptography');
+} = require('@liskhq/lisk-cryptography');
 
 const createAccount = async balance => {
 	const passphrase = getRandomBytes(10).toString('utf8');

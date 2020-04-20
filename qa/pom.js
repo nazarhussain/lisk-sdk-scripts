@@ -10,22 +10,22 @@ const {
 	getRandomAccount,
 	networkIdentifier,
 	getLastBlock,
-} = require('./utils.es6');
+} = require('../utils.js');
 
 const {
 	transfer,
 	reportMisbehavior,
 	utils: { convertLSKToBeddows, convertBeddowsToLSK },
-} = require('../elements/lisk-transactions');
+} = require('@liskhq/lisk-transactions');
 
 const {
 	getBytes,
-} = require('../framework/src/application/node/block_processor_v2');
+} = require('lisk-framework/src/application/node/block_processor_v2');
 
 const {
 	hash,
 	signDataWithPrivateKey,
-} = require('../elements/lisk-cryptography');
+} = require('@liskhq/lisk-cryptography');
 
 const blockHeaderProps = [
 	'blockSignature',
