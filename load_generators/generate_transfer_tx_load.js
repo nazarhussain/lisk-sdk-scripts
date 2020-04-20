@@ -9,7 +9,7 @@ const accounts = require('./sample_accounts.json');
 const {
 	transfer,
 	utils: { convertLSKToBeddows },
-} = require('../../elements/lisk-transactions');
+} = require('@liskhq/lisk-transactions');
 
 const generateTransferTransactions = async () => {
 	let count = 0;

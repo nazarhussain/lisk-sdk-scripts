@@ -104,4 +104,4 @@ dist
 .tern-port
 
 # Sample accounts
-benchmark_txpool/sample_accounts.json
+load_generators/sample_accounts.json

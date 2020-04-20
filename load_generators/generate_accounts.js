@@ -10,7 +10,7 @@ const {
 const {
 	transfer,
 	utils: { convertLSKToBeddows },
-} = require('../../elements/lisk-transactions');
+} = require('@liskhq/lisk-transactions');
 
 
 const maxAccounts = 1000;
