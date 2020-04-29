@@ -3,12 +3,12 @@ const {
 	genesisBlockDevnet,
 	configDevnet,
 	configurator,
-} = require('lisk-sdk');
+} = require('../../sdk');
 
 const myConfig = {
 	components: {
 		logger: {
-			consoleLogLevel: 'info',
+			consoleLogLevel: 'debug',
 		},
 		storage: {
 			user: 'postgres',
