@@ -104,4 +104,10 @@ dist
 .tern-port
 
 # Sample accounts
-load_generators/sample_accounts.json
+fixtures/generators/sample_accounts.json
+
+# Auto Generated API Clients
+api_clients/**/
+
+# Use latest config
+config/**/
