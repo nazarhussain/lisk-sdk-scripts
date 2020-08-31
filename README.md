@@ -5,7 +5,7 @@ Collection of scripts which I used as day-to-day activities.
 ## Setup
 
 1. Copy latest configuration from SDK.
-  
+
 ```bash
 cp -r path/to/lisk-sdk/config .
 ```
@@ -21,7 +21,6 @@ export LISK_SDK_REPO_PATH=/path/to/sdk/repo
 ```
 
 2. Generate latest API Clients
-
 
 ```bash
 swagger-codegen generate \

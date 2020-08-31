@@ -1,5 +1,5 @@
 {
-  "npmName": "lisk-forger-api-client",
-  "supportsES6": true, 
-  "modelPropertyNaming": "camelCase"  
+	"npmName": "lisk-forger-api-client",
+	"supportsES6": true,
+	"modelPropertyNaming": "camelCase"
 }

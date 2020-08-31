@@ -1,12 +1,12 @@
 [
-    {
-        "address": "a72d2bc271c38b091e4c2959defad1909a0d31b5",
-        "publicKey": "f3bb8c8bbef8d5a4fc720c1b6c715fa4c05fde2ae302546617d4b2880f7e385f",
-        "passphrase": "0ca371016fc9ff29b819"
-    },
-    {
-        "address": "f63bbf783bc916727f92b3b1229b3f5ff5015b51",
-        "publicKey": "d850d0750a090d777f511d2415e544f4d990a1a938641f99a34afffd40ce1660",
-        "passphrase": "1ba3727c6d6d9190cbbb"
-    }
+	{
+		"address": "a72d2bc271c38b091e4c2959defad1909a0d31b5",
+		"publicKey": "f3bb8c8bbef8d5a4fc720c1b6c715fa4c05fde2ae302546617d4b2880f7e385f",
+		"passphrase": "0ca371016fc9ff29b819"
+	},
+	{
+		"address": "f63bbf783bc916727f92b3b1229b3f5ff5015b51",
+		"publicKey": "d850d0750a090d777f511d2415e544f4d990a1a938641f99a34afffd40ce1660",
+		"passphrase": "1ba3727c6d6d9190cbbb"
+	}
 ]

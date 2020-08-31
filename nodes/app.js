@@ -1,9 +1,4 @@
-const {
-	Application,
-	genesisBlockDevnet,
-	configDevnet,
-	configurator,
-} = require('../../sdk');
+const { Application, genesisBlockDevnet, configDevnet, configurator } = require('../../sdk');
 
 const myConfig = {
 	components: {

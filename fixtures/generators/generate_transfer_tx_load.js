@@ -1,10 +1,7 @@
-const {
-	getRandomAccount,
-	getAccountNonce,
-} = require('../accounts');
-const {networkIdentifier} = require('../../utils/network');
-const {transfer, convertLSKToBeddows} = require('../../utils/transactions');
-const accounts = require('../generators/sample_accounts.json');
+const { getRandomAccount, getAccountNonce } = require('../accounts');
+const { networkIdentifier } = require('../../utils/network');
+const { transfer, convertLSKToBeddows } = require('../../utils/transactions');
+const accounts = require('./sample_accounts.json');
 const api = require('../../api_clients');
 
 const generateTransferTransactions = async () => {
@@ -25,11 +22,11 @@ const generateTransferTransactions = async () => {
 
 		try {
 			await api.http.transactions.transactionsPost(tx);
-		} catch(error) {
+		} catch (error) {
 			console.log(await error.json());
 			throw error;
 		}
-		
+
 		count += 1;
 		console.info(`Broadcasted ${count} transactions...`);
 	}
@@ -37,6 +34,4 @@ const generateTransferTransactions = async () => {
 
 const activeLoadType = generateTransferTransactions;
 
-activeLoadType()
-	.then(console.info)
-	.catch(console.error);
+activeLoadType().then(console.info).catch(console.error);

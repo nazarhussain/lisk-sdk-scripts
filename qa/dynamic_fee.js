@@ -20,9 +20,7 @@ const {
 		},
 	},
 } = require('lisk-framework/test/fixtures/config/devnet/config.json');
-const {
-	genesis: genesisAccount,
-} = require('lisk-framework/test/fixtures/accounts');
+const { genesis: genesisAccount } = require('lisk-framework/test/fixtures/accounts');
 
 const networkIdentifier = getNetworkIdentifier(
 	genesisBlock.payloadHash,
@@ -47,20 +45,12 @@ const updateForging = async forging => {
 const getRandomAccount = () => {
 	const passphrase = getRandomBytes(10).toString('utf8');
 	const address = getAddressFromPassphrase(passphrase);
-	const { publicKey, privateKey } = getPrivateAndPublicKeyFromPassphrase(
-		passphrase,
-	);
+	const { publicKey, privateKey } = getPrivateAndPublicKeyFromPassphrase(passphrase);
 
 	return { passphrase, publicKey, privateKey, nonce: 0, address };
 };
 
-const transferTx = ({
-	amount,
-	fee,
-	nonce,
-	recipientAccount,
-	senderAccount,
-}) => {
+const transferTx = ({ amount, fee, nonce, recipientAccount, senderAccount }) => {
 	const randomRecipientAccount = recipientAccount || getRandomAccount();
 	const randomSenderAccount = senderAccount || genesisAccount;
 
@@ -121,21 +111,13 @@ const userDefinedFeeCase = async () => {
 	const lastBlock = await getLastBlock();
 	const feeForged = lastBlock.transactions.map(t => t.fee);
 	console.info({ feeBroadcasted, feeForged });
-	assert(
-		lastBlock.numberOfTransactions === 3,
-		'Block with different transactions forged',
-	);
-	assert(
-		compareArray(feeForged, feeBroadcasted),
-		'Transaction with different fee forged',
-	);
+	assert(lastBlock.numberOfTransactions === 3, 'Block with different transactions forged');
+	assert(compareArray(feeForged, feeBroadcasted), 'Transaction with different fee forged');
 };
 
 const minFeeCase = async () => {
 	await updateAccountNonce(genesisAccount);
-	console.info(
-		'Transaction with fee lower than minimum per byte fee should not be accepted',
-	);
+	console.info('Transaction with fee lower than minimum per byte fee should not be accepted');
 	const tx = transferTx({ fee: '150000' });
 	const { minFee } = new TransferTransaction(tx);
 	const validMinFeeTx = transferTx({ fee: minFee.toString() });
@@ -145,9 +127,7 @@ const minFeeCase = async () => {
 		validMinFee: validMinFeeTx.fee,
 		inValidMinFee: inValidMinFeeTx.fee,
 	});
-	const validMinFeeTxResult = await client.transactions.broadcast(
-		validMinFeeTx,
-	);
+	const validMinFeeTxResult = await client.transactions.broadcast(validMinFeeTx);
 	let error = null;
 
 	try {
@@ -160,8 +140,7 @@ const minFeeCase = async () => {
 		'Transaction with minimum fee is not accepted',
 	);
 	assert(
-		error.errors[0].message ===
-			'Insufficient transaction fee. Minimum required fee is: 130000',
+		error.errors[0].message === 'Insufficient transaction fee. Minimum required fee is: 130000',
 		'Transaction with invalid min fee accepted',
 	);
 	await sleep(10000);
@@ -197,10 +176,7 @@ const feePriorityCase = async () => {
 	const lastBlock = await getLastBlock();
 	const feeForged = lastBlock.transactions.map(t => t.fee);
 	console.info({ feeBroadcasted, feeForged, feeOrdered });
-	assert(
-		compareArray(feeOrdered, feeForged),
-		'Block was not forged in right fee priority',
-	);
+	assert(compareArray(feeOrdered, feeForged), 'Block was not forged in right fee priority');
 };
 
 const sequentialNonceCase = async () => {
@@ -225,10 +201,7 @@ const sequentialNonceCase = async () => {
 	const lastBlock = await getLastBlock();
 	const nonceForged = lastBlock.transactions.map(t => t.nonce);
 	console.info({ nonceBroadcasted, expectedNonceForged, nonceForged });
-	assert(
-		compareArray(expectedNonceForged, nonceForged),
-		'Non-sequential nonce forged',
-	);
+	assert(compareArray(expectedNonceForged, nonceForged), 'Non-sequential nonce forged');
 };
 
 const minRemainingBalanceCase = async () => {
@@ -254,9 +227,7 @@ const minRemainingBalanceCase = async () => {
 	);
 	await sleep(10000);
 
-	console.info(
-		'Sending transaction causing remaining balance limit should pass',
-	);
+	console.info('Sending transaction causing remaining balance limit should pass');
 	const tx = transferTx({
 		amount: convertLSKToBeddows('3.95'),
 		fee: convertLSKToBeddows('1'),
@@ -270,9 +241,7 @@ const minRemainingBalanceCase = async () => {
 	);
 	// ---------------
 
-	console.info(
-		'Sending transaction causing less than remaining balance should fail',
-	);
+	console.info('Sending transaction causing less than remaining balance should fail');
 	let error = null;
 	try {
 		const tx = transferTx({
@@ -292,9 +261,7 @@ const minRemainingBalanceCase = async () => {
 	);
 
 	// ---------------
-	console.info(
-		'Sending transaction with less than 0.05 amount to new account should fail',
-	);
+	console.info('Sending transaction with less than 0.05 amount to new account should fail');
 	error = null;
 	try {
 		await client.transactions.broadcast(
@@ -313,9 +280,7 @@ const minRemainingBalanceCase = async () => {
 	);
 
 	// -----------------------
-	console.info(
-		'Sending transaction with exactly 0.05 amount to new account should pass',
-	);
+	console.info('Sending transaction with exactly 0.05 amount to new account should pass');
 	await updateAccountNonce(genesisAccount);
 	const res2 = await client.transactions.broadcast(
 		transferTx({
@@ -347,26 +312,16 @@ const txInvalidationCase = async () => {
 		fee: convertLSKToBeddows('3'),
 		nonce: nonce.toString(),
 	});
-	console.info(
-		`Sending tx ${tx1.id} with nonce ${tx1.nonce} and fee ${tx1.fee}`,
-	);
+	console.info(`Sending tx ${tx1.id} with nonce ${tx1.nonce} and fee ${tx1.fee}`);
 	await client.transactions.broadcast(tx1);
-	console.info(
-		`Sending tx ${tx2.id} with nonce ${tx2.nonce} and fee ${tx2.fee}`,
-	);
+	console.info(`Sending tx ${tx2.id} with nonce ${tx2.nonce} and fee ${tx2.fee}`);
 	await client.transactions.broadcast(tx2);
 	await sleep(10000);
 
 	const block = await getLastBlock();
 
-	assert(
-		block.numberOfTransactions === 1,
-		'Block was forged with more transactions',
-	);
-	assert(
-		block.transactions[0].id === tx2.id,
-		'Block forged with invalid transaction',
-	);
+	assert(block.numberOfTransactions === 1, 'Block was forged with more transactions');
+	assert(block.transactions[0].id === tx2.id, 'Block forged with invalid transaction');
 	console.info(
 		`Block forged with tx ${block.transactions[0].id} with nonce ${block.transactions[0].nonce} and fee ${block.transactions[0].fee}`,
 	);
@@ -424,9 +379,7 @@ const txPoolFullCase = async () => {
 		}
 	}
 
-	console.info(
-		`Sent ${perAccountLimit * perAccountLimit} transactions with fee 0.6`,
-	);
+	console.info(`Sent ${perAccountLimit * perAccountLimit} transactions with fee 0.6`);
 	const highFeeTx = transferTx({
 		amount: convertLSKToBeddows('1'),
 		fee: convertLSKToBeddows('0.8'),
@@ -444,10 +397,7 @@ const txPoolFullCase = async () => {
 	const block = await getLastBlock();
 	const txIds = block.transactions.map(t => t.id);
 
-	assert(
-		txIds.includes(highFeeTx.id),
-		'Block not forged with high fee transaction',
-	);
+	assert(txIds.includes(highFeeTx.id), 'Block not forged with high fee transaction');
 
 	console.info(
 		`Block forged with ${block.numberOfTransactions} transactions and contains high fee transaction ${highFeeTx.id}`,
@@ -456,8 +406,7 @@ const txPoolFullCase = async () => {
 
 const process = async () => {
 	genesisAccount.nonce = parseInt(
-		(await client.accounts.get({ address: genesisAccount.address })).data[0]
-			.nonce,
+		(await client.accounts.get({ address: genesisAccount.address })).data[0].nonce,
 		10,
 	);
 
@@ -483,6 +432,4 @@ const process = async () => {
 	console.info('------------');
 };
 
-process()
-	.then(console.info)
-	.catch(console.error);
+process().then(console.info).catch(console.error);

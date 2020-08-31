@@ -1,25 +1,13 @@
-const {
-	client,
-	networkIdentifier,
-	genesisAccount,
-	sleep,
-	waitForBlock,
-} = require('../utils.js');
-
-const {
-	transfer,
-	TransferTransaction,
-} = require('@liskhq/lisk-transactions');
+const { transfer, TransferTransaction } = require('@liskhq/lisk-transactions');
 const {
 	getPrivateAndPublicKeyFromPassphrase,
 	getRandomBytes,
 } = require('@liskhq/lisk-cryptography');
+const { client, networkIdentifier, genesisAccount, sleep, waitForBlock } = require('../utils.js');
 
 const createAccount = async balance => {
 	const passphrase = getRandomBytes(10).toString('utf8');
-	const { privateKey, publicKey } = getPrivateAndPublicKeyFromPassphrase(
-		passphrase,
-	);
+	const { privateKey, publicKey } = getPrivateAndPublicKeyFromPassphrase(passphrase);
 
 	const transferTx = transfer({
 		amount: balance.toString(),
@@ -38,8 +26,7 @@ const createAccount = async balance => {
 
 const process = async () => {
 	genesisAccount.nonce = parseInt(
-		(await client.accounts.get({ address: genesisAccount.address })).data[0]
-			.nonce,
+		(await client.accounts.get({ address: genesisAccount.address })).data[0].nonce,
 		10,
 	);
 	let broadcastedPayloadSize = 0;
@@ -56,9 +43,7 @@ const process = async () => {
 
 	while (broadcastedPayloadSize < maxPayloadSize + 1024) {
 		const randomPassphrase = getRandomBytes(10).toString('utf8');
-		const { publicKey: randomPublicKey } = getPrivateAndPublicKeyFromPassphrase(
-			randomPassphrase,
-		);
+		const { publicKey: randomPublicKey } = getPrivateAndPublicKeyFromPassphrase(randomPassphrase);
 
 		const fromAccount = accounts[accountIndex];
 
@@ -92,10 +77,7 @@ const process = async () => {
 	do {
 		res = await client.blocks.get({ limit: 1 });
 		[block] = res.data;
-		console.info(
-			'Looking for block with higher transactions...',
-			block.numberOfTransactions,
-		);
+		console.info('Looking for block with higher transactions...', block.numberOfTransactions);
 		await sleep(1000);
 
 		// Last known block contains 3 transactions
@@ -112,12 +94,11 @@ const process = async () => {
 		broadcastedTransactions: trxCount,
 		forgedTransactions: transactions.length,
 	});
-	const forgedPayloadSize = transactions.reduce((acc, tx) => {
-		return acc + new TransferTransaction(tx).getBytes().length;
-	}, 0);
+	const forgedPayloadSize = transactions.reduce(
+		(acc, tx) => acc + new TransferTransaction(tx).getBytes().length,
+		0,
+	);
 
 	console.info({ forgedPayloadSize, broadcastedPayloadSize });
 };
-process()
-	.then(console.info)
-	.catch(console.error);
+process().then(console.info).catch(console.error);

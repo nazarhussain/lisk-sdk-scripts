@@ -140,12 +140,7 @@ const resultToCSV = results => {
 
 	console.info(columns.join());
 
-	for (const {
-		maxTransactions,
-		maxTransactionsPerAccount,
-		size,
-		spentTime,
-	} of results) {
+	for (const { maxTransactions, maxTransactionsPerAccount, size, spentTime } of results) {
 		console.info(
 			[
 				maxTransactions,

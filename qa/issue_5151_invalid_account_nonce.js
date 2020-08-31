@@ -11,7 +11,6 @@ const {
 	utils: { convertLSKToBeddows },
 } = require('../../elements/lisk-transactions');
 
-
 const process = async () => {
 	const accountNonce = parseInt(await getAccountNonce(genesisAccount), 10);
 

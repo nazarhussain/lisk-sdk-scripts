@@ -1,0 +1,10 @@
+
+# External files
+types/
+**/*.d.ts
+jest.config.js
+coverage
+benchmark
+.eslintrc.js
+api_clients/**/*.ts
+*.js

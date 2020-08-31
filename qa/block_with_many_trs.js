@@ -7,9 +7,7 @@ const {
 const { APIClient } = require('@liskhq/lisk-api-client');
 
 const genesisBlock = require('lisk-framework/test/fixtures/config/devnet/genesis_block.json');
-const {
-	genesis: genesisAccount,
-} = require('lisk-framework/test/fixtures/accounts');
+const { genesis: genesisAccount } = require('lisk-framework/test/fixtures/accounts');
 
 const networkIdentifier = getNetworkIdentifier(
 	genesisBlock.payloadHash,
@@ -43,9 +41,7 @@ const process = async () => {
 
 	for (let i = 0; i < 50; i += 1) {
 		const randomPassphrase = getRandomBytes(10).toString('utf8');
-		const { publicKey: randomPublicKey } = getPrivateAndPublicKeyFromPassphrase(
-			randomPassphrase,
-		);
+		const { publicKey: randomPublicKey } = getPrivateAndPublicKeyFromPassphrase(randomPassphrase);
 		const tx = transfer({
 			amount: '500000',
 			fee: '150000',
@@ -65,13 +61,8 @@ const process = async () => {
 	do {
 		res = await client.blocks.get({ limit: 1 });
 		block = res.data[0];
-		console.info(
-			'Block contains # transactions...',
-			block.numberOfTransactions,
-		);
+		console.info('Block contains # transactions...', block.numberOfTransactions);
 		await sleep(1000);
 	} while (block.numberOfTransactions < 25);
 };
-process()
-	.then(console.info)
-	.catch(console.error);
+process().then(console.info).catch(console.error);

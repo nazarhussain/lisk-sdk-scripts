@@ -1,6 +1,15 @@
 const assert = require('assert');
 
 const {
+	transfer,
+	reportMisbehavior,
+	utils: { convertLSKToBeddows, convertBeddowsToLSK },
+} = require('@liskhq/lisk-transactions');
+
+const { getBytes } = require('lisk-framework/src/application/node/block_processor_v2');
+
+const { hash, signDataWithPrivateKey } = require('@liskhq/lisk-cryptography');
+const {
 	client,
 	waitForBlock,
 	genesisAccount,
@@ -11,21 +20,6 @@ const {
 	networkIdentifier,
 	getLastBlock,
 } = require('../utils.js');
-
-const {
-	transfer,
-	reportMisbehavior,
-	utils: { convertLSKToBeddows, convertBeddowsToLSK },
-} = require('@liskhq/lisk-transactions');
-
-const {
-	getBytes,
-} = require('lisk-framework/src/application/node/block_processor_v2');
-
-const {
-	hash,
-	signDataWithPrivateKey,
-} = require('@liskhq/lisk-cryptography');
 
 const blockHeaderProps = [
 	'blockSignature',
@@ -57,9 +51,7 @@ const createContradictingBlockHeader = header => {
 	const { privateKey } = getGenesisKeyPair(header.generatorPublicKey);
 
 	header2.blockSignature = signDataWithPrivateKey(
-		hash(
-			Buffer.concat([Buffer.from(networkIdentifier, 'hex'), getBytes(header2)]),
-		),
+		hash(Buffer.concat([Buffer.from(networkIdentifier, 'hex'), getBytes(header2)])),
 		Buffer.from(privateKey, 'hex'),
 	);
 
@@ -135,14 +127,11 @@ const process = async () => {
 	console.info('Account balance is updated correctly after PoM accepted.');
 
 	assert(
-		BigInt(delegateBalanceAfterPoM) ===
-			BigInt(delegateBalanceBeforePoM) - BigInt(blockReward),
+		BigInt(delegateBalanceAfterPoM) === BigInt(delegateBalanceBeforePoM) - BigInt(blockReward),
 		'Delegate balance is not updated correctly after PoM accepted.',
 	);
 
 	console.info('Delegate balance is updated correctly after PoM accepted.');
 };
 
-process()
-	.then(console.info)
-	.catch(console.error);
+process().then(console.info).catch(console.error);

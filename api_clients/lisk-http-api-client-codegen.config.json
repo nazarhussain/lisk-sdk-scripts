@@ -1,5 +1,5 @@
 {
-  "npmName": "lisk-http-api-client",
-  "supportsES6": true, 
-  "modelPropertyNaming": "camelCase"  
+	"npmName": "lisk-http-api-client",
+	"supportsES6": true,
+	"modelPropertyNaming": "camelCase"
 }

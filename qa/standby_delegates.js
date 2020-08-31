@@ -1,5 +1,11 @@
 const assert = require('assert');
 const {
+	registerDelegate,
+	castVotes,
+	transfer,
+	utils: { convertLSKToBeddows },
+} = require('@liskhq/lisk-transactions');
+const {
 	client,
 	storage,
 	arrDifference,
@@ -12,12 +18,6 @@ const {
 	startOfRound,
 	getLastBlock,
 } = require('../utils.js');
-const {
-	registerDelegate,
-	castVotes,
-	transfer,
-	utils: { convertLSKToBeddows },
-} = require('@liskhq/lisk-transactions');
 
 const getForgetList = async () =>
 	JSON.parse(await storage.entities.ConsensusState.getKey('dpos:forgersList'));
@@ -29,20 +29,14 @@ const getDposListsForRound = async round => {
 	await waitForBlock({ height: startOfRound(round) });
 
 	const forgerList = (await getForgetList()).find(list => list.round === round);
-	const voteWeightsList = (await getVoteWeights()).find(
-		list => list.round === round,
-	);
+	const voteWeightsList = (await getVoteWeights()).find(list => list.round === round);
 
 	return { forgerList, voteWeightsList };
 };
 
 const registerRandomDelegate = async ({ username } = {}) => {
 	const account = getRandomAccount();
-	account.username =
-		username ||
-		Math.random()
-			.toString(36)
-			.substring(2, 15);
+	account.username = username || Math.random().toString(36).substring(2, 15);
 	genesisAccount.nonce = await getAccountNonce(genesisAccount);
 
 	const transferTx = transfer({
@@ -74,11 +68,7 @@ const registerRandomDelegate = async ({ username } = {}) => {
 const case1FirstRound = async () => {
 	const forgerList = await getForgetList();
 	const firstRound = forgerList.find(list => list.round === 1);
-	const {
-		round,
-		standby: standbyDelegates,
-		delegates: shuffledDelegates,
-	} = firstRound;
+	const { round, standby: standbyDelegates, delegates: shuffledDelegates } = firstRound;
 	const activeDelegates = arrDifference(shuffledDelegates, standbyDelegates);
 
 	assert(round === 1, 'First round not found');
@@ -90,9 +80,7 @@ const case1FirstRound = async () => {
 		activeDelegates.length === 101,
 		`Active delegates in first round are not 101 instead ${activeDelegates.length}`,
 	);
-	console.info(
-		'Case1: For first round there must be 101 active delegates and 2 standby delegates',
-	);
+	console.info('Case1: For first round there must be 101 active delegates and 2 standby delegates');
 };
 
 // Create delegates with 0 totalVotes Received, with the current genesis they
@@ -100,9 +88,7 @@ const case1FirstRound = async () => {
 const case2DelegateWithZeroTotalVotes = async () => {
 	const delegate = await registerRandomDelegate();
 	await waitForBlock({ heightOffset: 1 });
-	const [account] = (
-		await client.accounts.get({ address: delegate.address })
-	).data;
+	const [account] = (await client.accounts.get({ address: delegate.address })).data;
 	console.info({ delegate: account });
 	assert(account !== undefined, 'Delegate account is not registered');
 
@@ -116,10 +102,7 @@ const case2DelegateWithZeroTotalVotes = async () => {
 	);
 
 	assert(forgerList !== undefined, 'Forger list for round must exists.');
-	assert(
-		voteWeightsList !== undefined,
-		'Vote weight list for round must exists.',
-	);
+	assert(voteWeightsList !== undefined, 'Vote weight list for round must exists.');
 	assert(!inForgerList, 'Delegate should not be part of forger list');
 	assert(!inVoteWeights, 'Delegate should not be part of vote weights list');
 
@@ -167,9 +150,7 @@ const case3DelegateWith1000TotalVotes = async () => {
 	let inForgerList = false;
 
 	while (!inForgerList) {
-		const { forgerList, voteWeightsList } = await getDposListsForRound(
-			nextRound,
-		);
+		const { forgerList, voteWeightsList } = await getDposListsForRound(nextRound);
 		const inVoteWeights = voteWeightsList.delegates.find(
 			({ address }) => address === delegate.address,
 		);
@@ -220,6 +201,4 @@ const process = async () => {
 	console.info({ 'Standby delegates': forgerList.standby, round });
 };
 
-process()
-	.then(console.info)
-	.catch(console.error);
+process().then(console.info).catch(console.error);
