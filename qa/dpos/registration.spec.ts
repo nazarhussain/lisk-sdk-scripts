@@ -130,6 +130,24 @@ describe('DPOS Delegate Registration', () => {
 			});
 		});
 
+		describe('Register username with string containing spaces', () => {
+			test.each([' ', ' myuser', 'myuser ', 'my user'])(
+				'should fail when account registered with username "%s"',
+				async (username: string) => {
+					await expect(registerDelegate({ account, username, fee: '11' })).rejects.toMatchObject({
+						status: 409,
+						response: {
+							errors: [
+								{
+									message: 'ValidationError: The username is in unsupported format',
+								},
+							],
+						},
+					});
+				},
+			);
+		});
+
 		describe('Register username which contains null characters', () => {
 			test.each(['myUser\u0000', '\u0000myDelegate', 'mydel\u0000egatE'])(
 				'should fail when account registered with username "%s"',
@@ -258,7 +276,7 @@ describe('DPOS Delegate Registration', () => {
 			});
 		});
 
-		describe.only('Re-register account as delegate which is already a delegate', () => {
+		describe('Re-register account as delegate which is already a delegate', () => {
 			it('should fail with error', async () => {
 				const username = getRandomBytes(5).toString('hex');
 				await registerDelegate({ account, username, fee: '11' });
