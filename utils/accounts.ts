@@ -16,7 +16,7 @@ export const genesisAccount = {
 };
 
 export const generateRandomAccount = (): AccountSeed => {
-	const passphrase = getRandomBytes(10).toString('hex');
+	const passphrase = getRandomBytes(20).toString('hex');
 	const address = getAddressFromPassphrase(passphrase);
 	const { publicKey, privateKey } = getPrivateAndPublicKeyFromPassphrase(passphrase);
 

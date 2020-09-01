@@ -4,7 +4,7 @@ module.exports = {
 			tsConfig: './test/tsconfig.json',
 		},
 	},
-	testMatch: ['<rootDir>/(test|features)/**/?(*.)+(spec|test|steps).+(ts|tsx|js)'],
+	testMatch: ['<rootDir>/(test|qa)/**/?(*.)+(spec|test).+(ts|tsx|js)'],
 	setupFilesAfterEnv: ['<rootDir>/test/setup.js'],
 	transform: {
 		'^.+\\.(ts|tsx)$': 'ts-jest',
@@ -34,4 +34,7 @@ module.exports = {
 	 * This can be done programmatically using jest.resetModules().
 	 */
 	resetModules: true,
+
+	// Large value as we have to wait a lot for block forging
+	testTimeout: 60 * 1000,
 };

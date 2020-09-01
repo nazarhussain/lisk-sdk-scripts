@@ -19,4 +19,18 @@ export const http = {
 	transactions: new TransactionsApi({ basePath: httpApiURL }),
 };
 
+export class ServerResponse<T = Record<string, unknown>> {
+	public status: number;
+	public response: T;
+
+	constructor(status: number, response: T) {
+		this.response = response;
+		this.status = status;
+	}
+
+	toJSON(): { status: number; response: T } {
+		return { status: this.status, response: this.response };
+	}
+}
+
 export const api = { http };
