@@ -36,5 +36,5 @@ module.exports = {
 	resetModules: true,
 
 	// Large value as we have to wait a lot for block forging
-	testTimeout: 60 * 1000,
+	testTimeout: 300 * 1000,
 };

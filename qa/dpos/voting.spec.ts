@@ -1,69 +1,14 @@
 import 'jest-extended';
 import { getRandomBytes } from '@liskhq/lisk-cryptography';
 import { AccountSeed } from '../../types';
-import { buildAccount, buildAccounts, getAccountNonce, getAccount } from '../../utils/accounts';
-import { registerDelegate } from '../../utils/test';
-import { waitForBlock, networkIdentifier } from '../../utils/network';
-import { vote, convertLSKToBeddows, convertBeddowsToLSK } from '../../utils/transactions';
-import { ServerResponse, api, Account } from '../../utils/api';
+import { buildAccount, buildAccounts, getAccount } from '../../utils/accounts';
+import { registerDelegate, castVotes } from '../../utils/test';
+import { waitForBlock } from '../../utils/network';
+import { convertLSKToBeddows, convertBeddowsToLSK } from '../../utils/transactions';
+import { Account } from '../../utils/api';
 
 const voterBalance = 1000;
 const votedAmountPerDelegate = 30;
-
-const castVotes = async ({
-	voter,
-	delegates,
-	fixedAmount,
-	eachDelegateAmount,
-	fee,
-}:
-	| {
-			voter: AccountSeed;
-			delegates: AccountSeed[];
-			fee?: string;
-			fixedAmount?: string;
-			eachDelegateAmount: string[];
-	  }
-	| {
-			voter: AccountSeed;
-			delegates: AccountSeed[];
-			fee?: string;
-			fixedAmount: string;
-			eachDelegateAmount?: string[];
-	  }) => {
-	let voteAmount: bigint[];
-
-	if (fixedAmount) {
-		voteAmount = Array(delegates.length).fill(BigInt(convertLSKToBeddows(fixedAmount))) as bigint[];
-	} else if (eachDelegateAmount) {
-		voteAmount = eachDelegateAmount.map(d => BigInt(convertLSKToBeddows(d)));
-	}
-
-	const votes = delegates.map((d, index) => ({
-		delegateAddress: d.address,
-		amount: voteAmount[index],
-	}));
-
-	const { id, tx } = vote({
-		senderPublicKey: voter.publicKey,
-		votes,
-		nonce: BigInt(await getAccountNonce(voter.address)).toString(),
-		passphrase: voter.passphrase,
-		fee: convertLSKToBeddows(fee ?? '0.2'),
-		networkIdentifier,
-	});
-
-	try {
-		const res = await api.http.transactions.transactionsPost(tx);
-
-		expect(res.data.transactionId).toEqual(id);
-
-		return new ServerResponse<typeof res>(200, res);
-	} catch (res) {
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-		throw new ServerResponse<typeof res>(res.status, await res.json());
-	}
-};
 
 describe('DPOS Voting', () => {
 	let nonVotedDelegates: AccountSeed[] = [];

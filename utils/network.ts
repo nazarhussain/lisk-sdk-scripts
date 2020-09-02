@@ -15,7 +15,7 @@ export const getLastBlock = async (): Promise<Block> =>
 	(await api.http.blocks.blocksGet((await api.http.node.nodeInfoGet()).data.height)).data[0];
 
 export const waitForBlock = async ({
-	delay = 1000,
+	delay = 200,
 	height,
 	heightOffset,
 	fn,
@@ -25,7 +25,6 @@ export const waitForBlock = async ({
 	| { delay?: number; height?: number; heightOffset?: number; fn: (b: Block) => boolean }): Promise<
 	Block
 > => {
-	console.log('waitForBlock called...', (new Error().stack));
 	let matcher: (b: Block) => boolean;
 	let targetHeight!: number;
 	let lastBlock = await getLastBlock();
