@@ -4,7 +4,7 @@ import { AccountSeed } from '../../types';
 import { buildAccount, buildAccounts, getAccountNonce, getAccount } from '../../utils/accounts';
 import { registerDelegate } from '../../utils/test';
 import { waitForBlock, networkIdentifier } from '../../utils/network';
-import { vote, convertLSKToBeddows } from '../../utils/transactions';
+import { vote, convertLSKToBeddows, convertBeddowsToLSK } from '../../utils/transactions';
 import { ServerResponse, api, Account } from '../../utils/api';
 
 const voterBalance = 1000;
@@ -460,7 +460,7 @@ describe('DPOS Voting', () => {
 		});
 	});
 
-	describe.only('When up vote makes account sentVotes contains more than 10 votes', () => {
+	describe('When up vote makes account sentVotes contains more than 10 votes', () => {
 		it('should fail', async () => {
 			const account = await getAccount(voter.address);
 			const existingVotes = account.dpos.sentVotes.length;
@@ -478,6 +478,53 @@ describe('DPOS Voting', () => {
 					],
 				},
 			});
+		});
+	});
+
+	describe('When having more than 20 unlocking objects for an account', () => {
+		it('should fail', async () => {
+			// There are 8 voted delegates and voted for 30 LSK
+			// Let's down-vote 8 delegates at a time with 10 LSK
+			// It should fail on 3rd transaction which will make unlocking to grow to 24
+			await castVotes({ voter, delegates: votedDelegates, fixedAmount: '-10' });
+			await waitForBlock({ heightOffset: 1 });
+			await castVotes({ voter, delegates: votedDelegates, fixedAmount: '-10' });
+			await waitForBlock({ heightOffset: 1 });
+
+			await expect(
+				castVotes({ voter, delegates: votedDelegates, fixedAmount: '-10' }),
+			).rejects.toEqual({
+				status: 409,
+				response: {
+					errors: [
+						{
+							message: 'Cannot downvote which exceeds account.dpos.unlocking to have more than 20',
+						},
+					],
+				},
+			});
+		});
+	});
+
+	describe('When down vote make voted amount reaches to zero ', () => {
+		it('should remove the voted delegate from sentVotes', async () => {
+			const account = await getAccount(voter.address);
+			const { delegateAddress, amount } = account.dpos.sentVotes[0];
+			const delegate = votedDelegates.find(
+				v => v.address.toString('hex') === delegateAddress,
+			) as AccountSeed;
+			await castVotes({
+				voter,
+				delegates: [delegate],
+				fixedAmount: convertBeddowsToLSK(`-${amount}`),
+			});
+			await waitForBlock({ heightOffset: 1 });
+			const updatedAccount = await getAccount(voter.address);
+			const findVote = updatedAccount.dpos.sentVotes.find(
+				v => v.delegateAddress === delegateAddress,
+			);
+
+			expect(findVote).toBeUndefined();
 		});
 	});
 });
