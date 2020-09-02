@@ -25,6 +25,7 @@ export const waitForBlock = async ({
 	| { delay?: number; height?: number; heightOffset?: number; fn: (b: Block) => boolean }): Promise<
 	Block
 > => {
+	console.log('waitForBlock called...', (new Error().stack));
 	let matcher: (b: Block) => boolean;
 	let targetHeight!: number;
 	let lastBlock = await getLastBlock();

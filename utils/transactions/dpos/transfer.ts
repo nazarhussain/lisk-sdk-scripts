@@ -7,7 +7,7 @@ import {
 	TransactionAssetOutput,
 	getFullAssetSchema,
 	calcMinTxFee,
-} from './common';
+} from '../common';
 
 export const transferAssetSchema = {
 	$id: 'lisk/transfer-asset',

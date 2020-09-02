@@ -4,7 +4,7 @@
 	"description": "Some tests scripts developed over lisk-sdk",
 	"private": true,
 	"scripts": {
-		"test": "jest",
+		"test": "./node_modules/.bin/jest --runInBand  --verbose",
 		"lint": "eslint --ext .js,.ts .",
 		"lint:fix": "eslint --fix --ext .js,.ts .",
 		"format": "prettier --write '**/*'"
@@ -22,13 +22,16 @@
 	"dependencies": {
 		"@liskhq/lisk-codec": "0.1.0-debug.1",
 		"@liskhq/lisk-cryptography": "3.0.0-debug.1",
+		"@liskhq/lisk-framework-forger-plugin": "0.1.0-debug.1",
+		"@liskhq/lisk-framework-http-api-plugin": "0.1.0-debug.1",
 		"@liskhq/lisk-transactions": "5.0.0-debug.1",
 		"@liskhq/lisk-utils": "0.1.0-debug.1",
 		"cucumber": "6.0.5",
 		"jest": "26.4.2",
 		"jest-extended": "0.11.5",
 		"lisk-forger-api-client": "1.0.0",
-		"lisk-http-api-client": "1.0.0"
+		"lisk-http-api-client": "1.0.0",
+		"lisk-sdk": "5.0.0-debug.1"
 	},
 	"engines": {
 		"node": ">=12.13.0 <=12",

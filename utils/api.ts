@@ -6,7 +6,7 @@ import {
 	BlockResponseData,
 } from 'lisk-http-api-client';
 
-export { BlockHeader, Transaction } from 'lisk-http-api-client';
+export { BlockHeader, Transaction, TransactionCreateResponse, Account } from 'lisk-http-api-client';
 export type Block = BlockResponseData;
 
 const httpApiURL = 'http://localhost:4000/api';

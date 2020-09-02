@@ -1,62 +1,10 @@
 import { getRandomBytes } from '@liskhq/lisk-cryptography';
-import { generateRandomAccount, genesisAccount, getAccountNonce } from '../../utils/accounts';
-import {
-	convertLSKToBeddows,
-	transfer,
-	register,
-	convertBeddowsToLSK,
-} from '../../utils/transactions';
+import { getAccountNonce, buildAccount } from '../../utils/accounts';
+import { convertLSKToBeddows, register, convertBeddowsToLSK } from '../../utils/transactions';
 import { networkIdentifier, waitForBlock, getLastBlock } from '../../utils/network';
-import { api, ServerResponse } from '../../utils/api';
+import { api } from '../../utils/api';
+import { registerDelegate } from '../../utils/test';
 import { AccountSeed } from '../../types';
-
-const buildAccount = async ({ balance }: { balance: string }): Promise<AccountSeed> => {
-	const account = generateRandomAccount();
-	const genesisAccountNonce = BigInt(await getAccountNonce(genesisAccount.address));
-	const { id, tx } = transfer({
-		recipientAddress: account.address,
-		amount: convertLSKToBeddows(balance),
-		fee: convertLSKToBeddows('0.1'),
-		nonce: genesisAccountNonce.toString(),
-		passphrase: genesisAccount.passphrase,
-		networkIdentifier,
-	});
-
-	await api.http.transactions.transactionsPost(tx);
-	await waitForBlock({ heightOffset: 1 });
-	await api.http.transactions.transactionsIdGet(id);
-	return account;
-};
-
-const registerDelegate = async ({
-	account,
-	username,
-	fee,
-}: {
-	account: AccountSeed;
-	username: string;
-	fee: string;
-}) => {
-	const { id, tx } = register({
-		senderPublicKey: account.publicKey,
-		username,
-		nonce: BigInt(await getAccountNonce(account.address)).toString(),
-		passphrase: account.passphrase,
-		fee: convertLSKToBeddows(fee),
-		networkIdentifier,
-	});
-
-	try {
-		const res = await api.http.transactions.transactionsPost(tx);
-
-		expect(res.data.transactionId).toEqual(id);
-
-		return new ServerResponse<typeof res>(200, res);
-	} catch (res) {
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-		throw new ServerResponse<typeof res>(res.status, await res.json());
-	}
-};
 
 const expectDelegateRegistered = async (account: AccountSeed, username?: string): Promise<void> => {
 	const lastBlock = await getLastBlock();
@@ -79,6 +27,7 @@ describe('DPOS Delegate Registration', () => {
 		// A valid account exists with 20LSK balance
 		beforeAll(async () => {
 			account = await buildAccount({ balance: '20' });
+			await waitForBlock({ heightOffset: 1 });
 		});
 
 		describe('Register username which contains upper case letters', () => {
@@ -203,6 +152,7 @@ describe('DPOS Delegate Registration', () => {
 		// A valid account exists with 20LSK balance
 		beforeEach(async () => {
 			account = await buildAccount({ balance: '20' });
+			await waitForBlock({ heightOffset: 1 });
 		});
 
 		describe('Register username with fee equal to name fee', () => {
@@ -260,6 +210,7 @@ describe('DPOS Delegate Registration', () => {
 				await registerDelegate({ account, username, fee: '11' });
 				await expectDelegateRegistered(account, username);
 				const account2 = await buildAccount({ balance: '20' });
+				await waitForBlock({ heightOffset: 1 });
 
 				await expect(
 					registerDelegate({ account: account2, username, fee: '11' }),

@@ -7,7 +7,7 @@ import {
 	TransactionAssetOutput,
 	getFullAssetSchema,
 	calcMinTxFee,
-} from './common';
+} from '../common';
 
 export const registerAssetSchema = {
 	$id: 'lisk/dpos/register',

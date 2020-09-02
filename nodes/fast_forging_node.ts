@@ -1,4 +1,4 @@
-const { createApplication } = require('./app');
+import { createApplication } from './app';
 
 const app = createApplication({
 	genesisConfig: { blockTime: 2 },
@@ -12,7 +12,7 @@ app
 	})
 	.catch(error => {
 		if (error instanceof Error) {
-			app.logger.error('App stopped with error', error);
+			app.logger.error('App stopped with error');
 			app.logger.debug(error.stack);
 		} else {
 			app.logger.error('App stopped with error', error);

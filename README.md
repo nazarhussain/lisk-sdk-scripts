@@ -7,7 +7,7 @@ Collection of scripts which I used as day-to-day activities.
 1. Copy latest configuration from SDK.
 
 ```bash
-cp -r path/to/lisk-sdk/config .
+cp -r $LISK_SDK_REPO_PATH/config .
 ```
 
 2. Install dependencies

@@ -18,6 +18,7 @@ module.exports = {
 		'max-len': 'off', // Managed by prettier
 		'implicit-arrow-linebreak': 'off', // Preferred
 		'lines-between-class-members': 'off', // Off because typescript has members and methods
+		'operator-linebreak': 'off', // Managed by prettier
 		'func-names': ['error', 'never'],
 		'import/extensions': [
 			'error',
