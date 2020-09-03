@@ -538,6 +538,19 @@
     "@liskhq/lisk-validator" "0.5.0-debug.1"
     debug "4.1.1"
 
+"@liskhq/lisk-chain@0.2.0-debug.2":
+  version "0.2.0-debug.2"
+  resolved "https://npm.lisk.io/@liskhq%2flisk-chain/-/lisk-chain-0.2.0-debug.2.tgz#bc17d2b0f73666ca021af86e3af485381ee9a9b9"
+  integrity sha512-ghlBfae9IYzFFSP0EWQBC3ETWDOpMuEhlIaMCEYgWek1iHNxbKAILlnofJFaFutn+8wanQJk5pmjCu6pqE4eqw==
+  dependencies:
+    "@liskhq/lisk-codec" "^0.1.0-debug.2"
+    "@liskhq/lisk-cryptography" "^3.0.0-debug.2"
+    "@liskhq/lisk-db" "^0.1.0-debug.2"
+    "@liskhq/lisk-tree" "^0.1.0-debug.2"
+    "@liskhq/lisk-utils" "^0.1.0-debug.2"
+    "@liskhq/lisk-validator" "^0.5.0-debug.2"
+    debug "4.1.1"
+
 "@liskhq/lisk-codec@0.1.0-debug.1":
   version "0.1.0-debug.1"
   resolved "https://npm.lisk.io/@liskhq%2flisk-codec/-/lisk-codec-0.1.0-debug.1.tgz#d31e9ad576f327a4e1242da892c3979a986c4c10"
@@ -545,6 +558,14 @@
   dependencies:
     "@liskhq/lisk-utils" "0.1.0-debug.1"
     "@liskhq/lisk-validator" "0.5.0-debug.1"
+
+"@liskhq/lisk-codec@^0.1.0-debug.2":
+  version "0.1.0-debug.2"
+  resolved "https://npm.lisk.io/@liskhq%2flisk-codec/-/lisk-codec-0.1.0-debug.2.tgz#8b13b5556d0eda2bc076a4dfee68b5bf0211bc95"
+  integrity sha512-69sxJbOt0rZi2OPOlsDF/EGFqngkMGyWv9om0lSgSi2X5W2O70ZoUrYl80pG7wCSGXfMnFq5snC7UsrF93zHew==
+  dependencies:
+    "@liskhq/lisk-utils" "^0.1.0-debug.2"
+    "@liskhq/lisk-validator" "^0.5.0-debug.2"
 
 "@liskhq/lisk-cryptography@3.0.0-debug.1":
   version "3.0.0-debug.1"
@@ -558,10 +579,31 @@
   optionalDependencies:
     sodium-native "2.4.6"
 
+"@liskhq/lisk-cryptography@^3.0.0-debug.2":
+  version "3.0.0-debug.2"
+  resolved "https://npm.lisk.io/@liskhq%2flisk-cryptography/-/lisk-cryptography-3.0.0-debug.2.tgz#90313754d5bc25d215151450db92d6f79b060f0b"
+  integrity sha512-9iBYIu9adGsrrnY+emdCMNnjQLdYulMaeDex70I3PQma5v7IkLoNV7dr0fSkTAHBnOOYEZnDnwE+j7XHxqQ6pw==
+  dependencies:
+    buffer-reverse "1.0.1"
+    ed2curve "0.3.0"
+    tweetnacl "1.0.3"
+    varuint-bitcoin "1.1.2"
+  optionalDependencies:
+    sodium-native "2.4.6"
+
 "@liskhq/lisk-db@0.1.0-debug.1":
   version "0.1.0-debug.1"
   resolved "https://npm.lisk.io/@liskhq%2flisk-db/-/lisk-db-0.1.0-debug.1.tgz#eea5c507875fe2a0ca2bfc86ea185b4cd3358433"
   integrity sha512-hDHoD2+pCS1s7P6PAT8Mf0XwEQLJJCpxWtw6KilSvUj7GDFYTvo4CzeqvS+sC8sK660xIB5zmXL71z+XTUmIAA==
+  dependencies:
+    debug "4.1.1"
+    levelup "4.4.0"
+    rocksdb "4.1.0"
+
+"@liskhq/lisk-db@^0.1.0-debug.2":
+  version "0.1.0-debug.2"
+  resolved "https://npm.lisk.io/@liskhq%2flisk-db/-/lisk-db-0.1.0-debug.2.tgz#5689d4657977147140ae2ae3e47e95757b06f788"
+  integrity sha512-NOD89vN03ZK7+v2IcLq3yJMoW8+/pZnOJ3hqo9znYjCseOKodcv6EcrF15luH4O2aaL+Up0Nf/RaPSBhRVXwxA==
   dependencies:
     debug "4.1.1"
     levelup "4.4.0"
@@ -652,10 +694,25 @@
     "@liskhq/lisk-cryptography" "3.0.0-debug.1"
     "@liskhq/lisk-utils" "0.1.0-debug.1"
 
+"@liskhq/lisk-tree@^0.1.0-debug.2":
+  version "0.1.0-debug.2"
+  resolved "https://npm.lisk.io/@liskhq%2flisk-tree/-/lisk-tree-0.1.0-debug.2.tgz#86773f96cbea4ce2b9b0cbf1e3abbd659c5eea8b"
+  integrity sha512-+sJCcqfkXVDOrUWt9DZ6rG81LGE1EqwBeWjS94X0Hof85OpuPRd7lYc+bcSMmI1PITRs1Bdr4SECNjcuv3Jf+Q==
+  dependencies:
+    "@liskhq/lisk-cryptography" "^3.0.0-debug.2"
+    "@liskhq/lisk-utils" "^0.1.0-debug.2"
+
 "@liskhq/lisk-utils@0.1.0-debug.1":
   version "0.1.0-debug.1"
   resolved "https://npm.lisk.io/@liskhq%2flisk-utils/-/lisk-utils-0.1.0-debug.1.tgz#23c1ece600ba49ea34269e5a74e96c9b53d861e2"
   integrity sha512-Mmk0UP1yLFM9KxAbTahPQ2pma/gpy2FQw8pATSrO9utziSqmKoPoFJcvEj0nzambAI8m+qsSWY2rQGQq2LdApQ==
+  dependencies:
+    lodash.clonedeep "4.5.0"
+
+"@liskhq/lisk-utils@^0.1.0-debug.2":
+  version "0.1.0-debug.2"
+  resolved "https://npm.lisk.io/@liskhq%2flisk-utils/-/lisk-utils-0.1.0-debug.2.tgz#ca622accb582baf7c0b980270300eeacf2cf5935"
+  integrity sha512-/5tzehunskAAPjHCvpbhbY85Vwkr5kOarBYxbC3zQJR3UUbyOp9nYE4p4u3roM8pHT9LmYsKKCSSXkcNf6aReQ==
   dependencies:
     lodash.clonedeep "4.5.0"
 
@@ -665,6 +722,20 @@
   integrity sha512-v+kIaLe1+wm/TUSTpe+QGOQsYUewn9PteG8TYdsOrfSYiJjfbAZcuDjVN7nq5AhMpiStqnHCxSuKTf4gNd2Ygg==
   dependencies:
     "@liskhq/lisk-cryptography" "3.0.0-debug.1"
+    "@types/node" "12.12.11"
+    "@types/semver" "7.1.0"
+    "@types/validator" "12.0.1"
+    ajv "6.12.0"
+    debug "4.1.1"
+    semver "7.1.3"
+    validator "12.2.0"
+
+"@liskhq/lisk-validator@^0.5.0-debug.2":
+  version "0.5.0-debug.2"
+  resolved "https://npm.lisk.io/@liskhq%2flisk-validator/-/lisk-validator-0.5.0-debug.2.tgz#e71df70625fd51afeae31ad7897d865dddefe0c2"
+  integrity sha512-/pO5ESyEZ8qyzbZxcYPtAqZpz6GgqVuJalB8GK0DmzKy+sw1bUmvcTFp6xdwIYllQjaTtC9fSmuLdedlHE5n/A==
+  dependencies:
+    "@liskhq/lisk-cryptography" "^3.0.0-debug.2"
     "@types/node" "12.12.11"
     "@types/semver" "7.1.0"
     "@types/validator" "12.0.1"

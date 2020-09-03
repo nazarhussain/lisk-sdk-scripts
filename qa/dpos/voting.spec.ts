@@ -5,7 +5,7 @@ import { buildAccount, buildAccounts, getAccount } from '../../utils/accounts';
 import { registerDelegate, castVotes } from '../../utils/test';
 import { waitForBlock } from '../../utils/network';
 import { convertLSKToBeddows, convertBeddowsToLSK } from '../../utils/transactions';
-import { Account } from '../../utils/api';
+import { AccountJSON } from '../../utils/api';
 
 const voterBalance = 1000;
 const votedAmountPerDelegate = 30;
@@ -308,12 +308,12 @@ describe('DPOS Voting', () => {
 	});
 
 	describe('When valid up vote transaction for multiple delegates', () => {
-		let delegate1: Account;
-		let delegate2: Account;
-		let updatedDelegate1: Account;
-		let updatedDelegate2: Account;
-		let account: Account;
-		let updatedAccount: Account;
+		let delegate1: AccountJSON;
+		let delegate2: AccountJSON;
+		let updatedDelegate1: AccountJSON;
+		let updatedDelegate2: AccountJSON;
+		let account: AccountJSON;
+		let updatedAccount: AccountJSON;
 		const voteFee = '10';
 
 		beforeAll(async () => {
@@ -353,12 +353,12 @@ describe('DPOS Voting', () => {
 	});
 
 	describe('When valid down vote transaction for multiple delegates', () => {
-		let delegate1: Account;
-		let delegate2: Account;
-		let updatedDelegate1: Account;
-		let updatedDelegate2: Account;
-		let account: Account;
-		let updatedAccount: Account;
+		let delegate1: AccountJSON;
+		let delegate2: AccountJSON;
+		let updatedDelegate1: AccountJSON;
+		let updatedDelegate2: AccountJSON;
+		let account: AccountJSON;
+		let updatedAccount: AccountJSON;
 		let lastBlockHeight: number;
 		const voteFee = '10';
 

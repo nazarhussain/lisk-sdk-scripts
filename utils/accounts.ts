@@ -89,3 +89,15 @@ export const buildAccounts = async ({
 
 	return accounts;
 };
+
+export const getGenesisKeyPair = (
+	publicKey: string,
+): { address: string; publicKey: string; passphrase: string } => {
+	const pair = genesisDelegates.find(d => d.publicKey === publicKey);
+
+	if (!pair) {
+		throw new Error(`Genesis key pair not found for: ${publicKey}`);
+	}
+
+	return pair;
+};

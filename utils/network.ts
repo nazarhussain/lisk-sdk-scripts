@@ -1,7 +1,7 @@
 import { getNetworkIdentifier } from '@liskhq/lisk-cryptography';
 import * as genesisBlock from '../config/devnet/genesis_block.json';
 import * as genesisConfig from '../config/devnet/config.json';
-import { api, Block } from './api';
+import { api, BlockJSON } from './api';
 
 export const sleep = async (ms: number): Promise<void> =>
 	new Promise(resolve => setTimeout(resolve, ms));
@@ -11,8 +11,11 @@ export const networkIdentifier = getNetworkIdentifier(
 	genesisConfig.genesisConfig.communityIdentifier,
 );
 
-export const getLastBlock = async (): Promise<Block> =>
+export const getLastBlock = async (): Promise<BlockJSON> =>
 	(await api.http.blocks.blocksGet((await api.http.node.nodeInfoGet()).data.height)).data[0];
+
+export const getBlockByHeight = async (height: number): Promise<BlockJSON> =>
+	(await api.http.blocks.blocksGet(height)).data[0];
 
 export const waitForBlock = async ({
 	delay = 200,
@@ -20,12 +23,15 @@ export const waitForBlock = async ({
 	heightOffset,
 	fn,
 }:
-	| { delay?: number; height: number; heightOffset?: number; fn?: (b: Block) => boolean }
-	| { delay?: number; height?: number; heightOffset: number; fn?: (b: Block) => boolean }
-	| { delay?: number; height?: number; heightOffset?: number; fn: (b: Block) => boolean }): Promise<
-	Block
-> => {
-	let matcher: (b: Block) => boolean;
+	| { delay?: number; height: number; heightOffset?: number; fn?: (b: BlockJSON) => boolean }
+	| { delay?: number; height?: number; heightOffset: number; fn?: (b: BlockJSON) => boolean }
+	| {
+			delay?: number;
+			height?: number;
+			heightOffset?: number;
+			fn: (b: BlockJSON) => boolean;
+	  }): Promise<BlockJSON> => {
+	let matcher: (b: BlockJSON) => boolean;
 	let targetHeight!: number;
 	let lastBlock = await getLastBlock();
 

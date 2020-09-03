@@ -6,8 +6,8 @@ import {
 	BlockResponseData,
 } from 'lisk-http-api-client';
 
-export { BlockHeader, Transaction, TransactionCreateResponse, Account } from 'lisk-http-api-client';
-export type Block = BlockResponseData;
+export { BlockHeader as BlockHeaderJSON, Transaction, TransactionCreateResponse, Account as AccountJSON } from 'lisk-http-api-client';
+export type BlockJSON = BlockResponseData;
 
 const httpApiURL = 'http://localhost:4000/api';
 // const forgerApiURL = 'http://localhost:4001/api';

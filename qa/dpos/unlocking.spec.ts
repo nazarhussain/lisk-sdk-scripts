@@ -4,7 +4,7 @@ import { AccountSeed } from '../../types';
 import { buildAccount, buildAccounts, getAccount } from '../../utils/accounts';
 import { registerDelegate, castVotes, unlockFunds } from '../../utils/test';
 import { waitForBlock } from '../../utils/network';
-import { Account } from '../../utils/api';
+import { AccountJSON } from '../../utils/api';
 import { convertLSKToBeddows } from '../../utils/transactions';
 
 describe('DPOS Unlocking', () => {
@@ -417,7 +417,7 @@ describe('DPOS Unlocking', () => {
 				response: {
 					errors: [
 						{
-							message: 'Error: Unlock objects must be unique',
+							message: 'Unlocking is not permitted as it is still within the waiting period',
 						},
 					],
 				},
@@ -451,10 +451,11 @@ describe('DPOS Unlocking', () => {
 		// To test this you need to change the wait time to low in SDK and here and then test
 		describe.skip('Unlock amount which has waited for 2000 blocks', () => {
 			const WAIT_TIME_VOTE = 2000;
-			let voterAccount: Account;
-			let voterUpdatedAccount: Account;
+			let voterAccount: AccountJSON;
+			let voterUpdatedAccount: AccountJSON;
 
 			beforeAll(async () => {
+				console.info('%%%%%%% before all execute');
 				await waitForBlock({ height: fullyUnVotedHeight + WAIT_TIME_VOTE });
 				voterAccount = await getAccount(voter.address);
 				await unlockFunds({
@@ -562,8 +563,8 @@ describe('DPOS Unlocking', () => {
 		// To test this you need to change the wait time to low in SDK and here and then test
 		describe.skip('Unlock amount which has waited for 260000 blocks', () => {
 			const WAIT_TIME_SELF_VOTE = 260000;
-			let selfVoterAccount: Account;
-			let selfVoterUpdatedAccount: Account;
+			let selfVoterAccount: AccountJSON;
+			let selfVoterUpdatedAccount: AccountJSON;
 
 			beforeAll(async () => {
 				await waitForBlock({ height: selfUnVoteHeight + WAIT_TIME_SELF_VOTE });
