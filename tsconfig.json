@@ -3,9 +3,9 @@
 		"forceConsistentCasingInFileNames": true,
 		"target": "es2019",
 		"module": "commonjs",
-		"declaration": true,
 		"moduleResolution": "node",
 		"newLine": "lf",
+		"importHelpers": true,
 		"noFallthroughCasesInSwitch": true,
 		"noImplicitReturns": true,
 		"noUnusedLocals": true,
@@ -14,6 +14,12 @@
 		"removeComments": true,
 		"resolveJsonModule": true,
 		"sourceMap": true,
-		"strict": true
-	}
+		"strict": true,
+		"composite": true,
+		"declaration": true,
+		"noImplicitAny": false,
+		"rootDir": "./",
+		"outDir": "./dist"
+	},
+	"include": ["./qa/**/*.ts", "./utils/**/*.ts", "./utils/**/*.json", "./config/**/*.json"]
 }
