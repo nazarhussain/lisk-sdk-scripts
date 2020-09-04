@@ -4,23 +4,22 @@ Collection of scripts which I used as day-to-day activities.
 
 ## Setup
 
-1. Copy latest configuration from SDK.
-
-```bash
-cp -r $LISK_SDK_REPO_PATH/config .
-```
-
-2. Install dependencies
+1. Install dependencies
 
 ```bash
 brew install jq
 brew cask install homebrew/cask-versions/adoptopenjdk8
 brew install swagger-codegen
-
-export LISK_SDK_REPO_PATH=/path/to/sdk/repo
 ```
 
-2. Generate latest API Clients
+2. Copy latest configuration from SDK.
+
+```bash
+export LISK_SDK_REPO_PATH=/path/to/sdk/repo
+cp -r $LISK_SDK_REPO_PATH/config .
+```
+
+3. Generate latest API Clients
 
 ```bash
 swagger-codegen generate \
@@ -38,6 +37,8 @@ swagger-codegen generate \
   --disable-examples
 
 yarn
-cd api_clients/lisk-http-api-client; yarn build;
-cd lisk-forger-api-client; yarn build;
+cd api_clients/lisk-http-api-client; ../../node_modules/.bin/tsc;
+cd api_clients/lisk-forger-api-client; ../../node_modules/.bin/tsc;
 ```
+
+Note: Its required to use `tsc` from main folder due to version issue with auto-generated package.json file.

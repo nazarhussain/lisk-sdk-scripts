@@ -3,7 +3,7 @@ import { getRandomBytes } from '@liskhq/lisk-cryptography';
 import { AccountSeed } from '../../types';
 import {
 	buildAccount,
-	getGenesisKeyPair,
+	getGenesisKeyPairByPublicKey,
 	generateRandomAccount,
 	getAccount,
 } from '../../utils/accounts';
@@ -18,7 +18,7 @@ const createModifiedBlockHeader = (header: BlockHeader, height: number): BlockHe
 	delete header2.signature;
 	header2.height = height;
 
-	const { passphrase } = getGenesisKeyPair(header.generatorPublicKey.toString('hex'));
+	const { passphrase } = getGenesisKeyPairByPublicKey(header.generatorPublicKey.toString('hex'));
 	header2.signature = signBlockHeader(header2, passphrase);
 
 	return header2;
@@ -190,7 +190,7 @@ describe('DPOS PoM', () => {
 			const lastBlockHeader2 = createContradictingBlockHeader(
 				blockHeaderFromJSON(lastBlockHeaderJSON),
 			);
-			const delegate = getGenesisKeyPair(lastBlockHeaderJSON.generatorPublicKey);
+			const delegate = getGenesisKeyPairByPublicKey(lastBlockHeaderJSON.generatorPublicKey);
 
 			await transferTokens({
 				amount: '100',
@@ -229,7 +229,7 @@ describe('DPOS PoM', () => {
 		beforeAll(async () => {
 			lastBlockHeaderJSON = (await getLastBlock()).header;
 			delegateAddress = Buffer.from(
-				getGenesisKeyPair(lastBlockHeaderJSON.generatorPublicKey).address,
+				getGenesisKeyPairByPublicKey(lastBlockHeaderJSON.generatorPublicKey).address,
 				'hex',
 			);
 			// Let's transfer some funds to delegate
@@ -379,7 +379,7 @@ describe('DPOS PoM', () => {
 
 		beforeAll(async () => {
 			const lastBlockHeaderJSON = (await getLastBlock()).header;
-			const delegate = getGenesisKeyPair(lastBlockHeaderJSON.generatorPublicKey);
+			const delegate = getGenesisKeyPairByPublicKey(lastBlockHeaderJSON.generatorPublicKey);
 			const delegateAddress = Buffer.from(delegate.address, 'hex');
 			const lastBlockHeader1 = blockHeaderFromJSON(lastBlockHeaderJSON);
 			const lastBlockHeader2 = createContradictingBlockHeader(

@@ -3,7 +3,7 @@ import { AccountSeed } from '../types';
 import { api, ServerResponse, TransactionCreateResponse } from './api';
 import { convertLSKToBeddows, register, vote, unlock, transfer } from './transactions';
 import { getAccountNonce, genesisAccount } from './accounts';
-import { networkIdentifier } from './network';
+import { networkIdentifier as devnetNetworkIdentifier } from './network';
 import { proofMisbehavior } from './transactions/dpos/pom';
 
 export const transferTokens = async ({
@@ -11,16 +11,19 @@ export const transferTokens = async ({
 	recipientAddress,
 	senderAddress,
 	passphrase,
+	networkIdentifier,
 }:
 	| {
 			amount: string;
 			recipientAddress: Buffer;
+			networkIdentifier?: Buffer;
 			senderAddress?: Buffer;
 			passphrase?: string;
 	  }
 	| {
 			amount: string;
 			recipientAddress: Buffer;
+			networkIdentifier?: Buffer;
 			senderAddress: Buffer;
 			passphrase: string;
 	  }): Promise<ServerResponse<TransactionCreateResponse>> => {
@@ -32,7 +35,7 @@ export const transferTokens = async ({
 		fee: convertLSKToBeddows('0.1'),
 		nonce: senderAccountNonce.toString(),
 		passphrase: passphrase ?? genesisAccount.passphrase,
-		networkIdentifier,
+		networkIdentifier: networkIdentifier ?? devnetNetworkIdentifier,
 	});
 
 	try {
@@ -56,9 +59,11 @@ export const registerDelegate = async ({
 	account,
 	username,
 	fee,
+	networkIdentifier,
 }: {
 	account: AccountSeed;
 	username: string;
+	networkIdentifier?: Buffer;
 	fee: string;
 }): Promise<ServerResponse<TransactionCreateResponse>> => {
 	const { id, tx } = register({
@@ -67,7 +72,7 @@ export const registerDelegate = async ({
 		nonce: BigInt(await getAccountNonce(account.address)).toString(),
 		passphrase: account.passphrase,
 		fee: convertLSKToBeddows(fee),
-		networkIdentifier,
+		networkIdentifier: networkIdentifier ?? devnetNetworkIdentifier,
 	});
 
 	try {
@@ -92,11 +97,13 @@ export const castVotes = async ({
 	delegates,
 	fixedAmount,
 	eachDelegateAmount,
+	networkIdentifier,
 	fee,
 }:
 	| {
 			voter: AccountSeed;
 			delegates: AccountSeed[];
+			networkIdentifier?: Buffer;
 			fee?: string;
 			fixedAmount?: string;
 			eachDelegateAmount: string[];
@@ -104,6 +111,7 @@ export const castVotes = async ({
 	| {
 			voter: AccountSeed;
 			delegates: AccountSeed[];
+			networkIdentifier?: Buffer;
 			fee?: string;
 			fixedAmount: string;
 			eachDelegateAmount?: string[];
@@ -127,7 +135,7 @@ export const castVotes = async ({
 		nonce: BigInt(await getAccountNonce(voter.address)).toString(),
 		passphrase: voter.passphrase,
 		fee: convertLSKToBeddows(fee ?? '0.2'),
-		networkIdentifier,
+		networkIdentifier: networkIdentifier ?? devnetNetworkIdentifier,
 	});
 
 	try {
@@ -154,11 +162,13 @@ export const unlockFunds = async ({
 	eachDelegateAmount,
 	fixedUnVoteHeight,
 	eachDelegateHeightUnVoteHeight,
+	networkIdentifier,
 	fee,
 }:
 	| {
 			voter: AccountSeed;
 			delegates: AccountSeed[];
+			networkIdentifier?: Buffer;
 			fee?: string;
 			fixedAmount?: string;
 			eachDelegateAmount: string[];
@@ -168,6 +178,7 @@ export const unlockFunds = async ({
 	| {
 			voter: AccountSeed;
 			delegates: AccountSeed[];
+			networkIdentifier?: Buffer;
 			fee?: string;
 			fixedAmount: string;
 			eachDelegateAmount?: string[];
@@ -201,7 +212,7 @@ export const unlockFunds = async ({
 		nonce: BigInt(await getAccountNonce(voter.address)).toString(),
 		passphrase: voter.passphrase,
 		fee: convertLSKToBeddows(fee ?? '0.2'),
-		networkIdentifier,
+		networkIdentifier: networkIdentifier ?? devnetNetworkIdentifier,
 	});
 
 	try {
@@ -226,10 +237,12 @@ export const claimMisbehavior = async ({
 	header1,
 	header2,
 	fee,
+	networkIdentifier,
 }: {
 	account: AccountSeed;
 	header1: BlockHeader;
 	header2: BlockHeader;
+	networkIdentifier?: Buffer;
 	fee?: string;
 }): Promise<ServerResponse<TransactionCreateResponse>> => {
 	const { id, tx } = proofMisbehavior({
@@ -239,7 +252,7 @@ export const claimMisbehavior = async ({
 		nonce: BigInt(await getAccountNonce(account.address)).toString(),
 		passphrase: account.passphrase,
 		fee: convertLSKToBeddows(fee ?? '0.2'),
-		networkIdentifier,
+		networkIdentifier: networkIdentifier ?? devnetNetworkIdentifier,
 	});
 
 	try {

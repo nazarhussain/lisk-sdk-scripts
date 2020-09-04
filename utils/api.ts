@@ -1,22 +1,35 @@
 import {
 	AccountsApi,
 	BlocksApi,
-	NodeApi,
+	NodeApi as HttpNodeApi,
 	TransactionsApi,
 	BlockResponseData,
+	DelegatesApi,
 } from 'lisk-http-api-client';
 
-export { BlockHeader as BlockHeaderJSON, Transaction, TransactionCreateResponse, Account as AccountJSON } from 'lisk-http-api-client';
+import { NodeApi as ForgerNodeApi } from 'lisk-forger-api-client';
+
+export {
+	BlockHeader as BlockHeaderJSON,
+	Transaction,
+	TransactionCreateResponse,
+	Account as AccountJSON,
+} from 'lisk-http-api-client';
 export type BlockJSON = BlockResponseData;
 
 const httpApiURL = 'http://localhost:4000/api';
-// const forgerApiURL = 'http://localhost:4001/api';
+const forgerApiURL = 'http://localhost:4001/api';
 
 export const http = {
 	accounts: new AccountsApi({ basePath: httpApiURL }),
 	blocks: new BlocksApi({ basePath: httpApiURL }),
-	node: new NodeApi({ basePath: httpApiURL }),
+	node: new HttpNodeApi({ basePath: httpApiURL }),
 	transactions: new TransactionsApi({ basePath: httpApiURL }),
+	delegates: new DelegatesApi({ basePath: httpApiURL }),
+};
+
+export const forger = {
+	forging: new ForgerNodeApi({ basePath: forgerApiURL }),
 };
 
 export class ServerResponse<T = Record<string, unknown>> {
@@ -33,4 +46,4 @@ export class ServerResponse<T = Record<string, unknown>> {
 	}
 }
 
-export const api = { http };
+export const api = { http, forger };

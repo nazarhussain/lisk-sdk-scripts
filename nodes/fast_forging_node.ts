@@ -1,4 +1,4 @@
-import { createApplication } from './app';
+import { createApplication } from '../utils/application';
 
 const app = createApplication({
 	genesisConfig: { blockTime: 2 },

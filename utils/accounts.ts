@@ -9,7 +9,7 @@ import { api, ServerResponse } from './api';
 import { AccountSeed } from '../types';
 import * as genesisAccountFixture from '../fixtures/accounts/devnet/genesis_account.json';
 import { convertLSKToBeddows, transfer } from './transactions';
-import { networkIdentifier } from './network';
+import { networkIdentifier as devnetNetworkIdentifier } from './network';
 
 export const genesisAccount = {
 	address: Buffer.from(genesisAccountFixture.address, 'hex'),
@@ -38,16 +38,23 @@ export const getAccountNonce = async (address: Buffer): Promise<bigint> => {
 export const getAccount = async (address: Buffer): Promise<Account> =>
 	(await api.http.accounts.accountsAddressGet(address.toString('hex'))).data;
 
-export const buildAccount = async ({ balance }: { balance: string }): Promise<AccountSeed> => {
+export const buildAccount = async ({
+	balance,
+	networkIdentifier,
+}: {
+	balance: string;
+	networkIdentifier?: Buffer;
+}): Promise<AccountSeed> => {
 	const account = generateRandomAccount();
 	const genesisAccountNonce = BigInt(await getAccountNonce(genesisAccount.address));
+
 	const { tx } = transfer({
 		recipientAddress: account.address,
 		amount: convertLSKToBeddows(balance),
 		fee: convertLSKToBeddows('0.1'),
 		nonce: genesisAccountNonce.toString(),
 		passphrase: genesisAccount.passphrase,
-		networkIdentifier,
+		networkIdentifier: networkIdentifier ?? devnetNetworkIdentifier,
 	});
 
 	await api.http.transactions.transactionsPost(tx);
@@ -58,9 +65,11 @@ export const buildAccount = async ({ balance }: { balance: string }): Promise<Ac
 export const buildAccounts = async ({
 	balance,
 	count,
+	networkIdentifier
 }: {
 	balance: string;
 	count: number;
+	networkIdentifier?: Buffer;
 }): Promise<AccountSeed[]> => {
 	const accounts: AccountSeed[] = [];
 	const genesisAccountNonce = BigInt(await getAccountNonce(genesisAccount.address));
@@ -73,7 +82,7 @@ export const buildAccounts = async ({
 			fee: convertLSKToBeddows('0.1'),
 			nonce: (genesisAccountNonce + BigInt(i)).toString(),
 			passphrase: genesisAccount.passphrase,
-			networkIdentifier,
+			networkIdentifier: networkIdentifier ?? devnetNetworkIdentifier,
 		});
 
 		try {
@@ -90,13 +99,28 @@ export const buildAccounts = async ({
 	return accounts;
 };
 
-export const getGenesisKeyPair = (
-	publicKey: string,
-): { address: string; publicKey: string; passphrase: string } => {
+interface GenesisKeyPair {
+	address: string;
+	publicKey: string;
+	passphrase: string;
+	password: string;
+}
+
+export const getGenesisKeyPairByPublicKey = (publicKey: string): GenesisKeyPair => {
 	const pair = genesisDelegates.find(d => d.publicKey === publicKey);
 
 	if (!pair) {
-		throw new Error(`Genesis key pair not found for: ${publicKey}`);
+		throw new Error(`Genesis key pair not found for public key: ${publicKey}`);
+	}
+
+	return pair;
+};
+
+export const getGenesisKeyPairByAddress = (address: string): GenesisKeyPair => {
+	const pair = genesisDelegates.find(d => d.address === address);
+
+	if (!pair) {
+		throw new Error(`Genesis key pair not found for address: ${address}`);
 	}
 
 	return pair;
