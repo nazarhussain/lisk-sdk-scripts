@@ -567,7 +567,7 @@
     levelup "4.4.0"
     rocksdb "4.1.0"
 
-"@liskhq/lisk-framework-forger-plugin@0.1.0-alpha.0", "@liskhq/lisk-framework-forger-plugin@^0.1.0-alpha.0":
+"@liskhq/lisk-framework-forger-plugin@^0.1.0-alpha.0":
   version "0.1.0-alpha.0"
   resolved "https://npm.lisk.io/@liskhq%2flisk-framework-forger-plugin/-/lisk-framework-forger-plugin-0.1.0-alpha.0.tgz#74c11620f961f3e334a16bae8cfd42c2a3d9413e"
   integrity sha512-faTXPrAefwcWZIn2G9PFHa/C4cvuJrVaaXay9dDPqpksVIpzTioMAqHUq8c89JvFac9w2f5zMxPVmNrfbohuLw==
@@ -588,7 +588,7 @@
     ip "1.1.5"
     lisk-framework "^0.7.0-alpha.0"
 
-"@liskhq/lisk-framework-http-api-plugin@0.1.0-alpha.0", "@liskhq/lisk-framework-http-api-plugin@^0.1.0-alpha.0":
+"@liskhq/lisk-framework-http-api-plugin@^0.1.0-alpha.0":
   version "0.1.0-alpha.0"
   resolved "https://npm.lisk.io/@liskhq%2flisk-framework-http-api-plugin/-/lisk-framework-http-api-plugin-0.1.0-alpha.0.tgz#da827ca07b97cedd03a5b964b5a1f1d189c0267b"
   integrity sha512-2QIE/9oEDJaEMJvNrQCzvq/zrEGtoLb/PuRAwUe+ZqWsprULvrgvBVqVrbzwwNaN4ytdp7T54adnPnv4W3zjYA==
