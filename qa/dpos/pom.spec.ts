@@ -13,15 +13,17 @@ import { BlockHeaderJSON, AccountJSON } from '../../utils/api';
 import { signBlockHeader, blockHeaderFromJSON, BlockHeader } from '../../utils/blocks';
 import { convertLSKToBeddows, convertBeddowsToLSK } from '../../utils/transactions';
 
+type Writeable<T> = { -readonly [P in keyof T]: T[P] };
+
 const createModifiedBlockHeader = (header: BlockHeader, height: number): BlockHeader => {
-	const header2 = { ...header };
+	const header2 = { ...header } as Partial<Writeable<BlockHeader>>;
 	delete header2.signature;
 	header2.height = height;
 
 	const { passphrase } = getGenesisKeyPairByPublicKey(header.generatorPublicKey.toString('hex'));
-	header2.signature = signBlockHeader(header2, passphrase);
+	header2.signature = signBlockHeader(header2 as BlockHeader, passphrase);
 
-	return header2;
+	return header2 as BlockHeader;
 };
 
 const createContradictingBlockHeader = (header: BlockHeader): BlockHeader =>

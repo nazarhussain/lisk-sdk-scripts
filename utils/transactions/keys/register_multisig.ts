@@ -1,5 +1,5 @@
 import { getPrivateAndPublicKeyFromPassphrase } from '@liskhq/lisk-cryptography';
-import { signTransaction } from '@liskhq/lisk-transactions';
+import { signMultiSignatureTransaction } from '@liskhq/lisk-transactions';
 import { codec } from '@liskhq/lisk-codec';
 
 import {
@@ -10,42 +10,46 @@ import {
 } from '../common';
 
 export const registerMultisigAssetSchema = {
-  $id: 'lisk/keys/register',
+	$id: 'lisk/keys/register',
 	type: 'object',
 	required: ['numberOfSignatures', 'optionalKeys', 'mandatoryKeys'],
 	properties: {
 		numberOfSignatures: {
 			dataType: 'uint32',
-      fieldNumber: 1,
-      // Disable to check if tx is validated on server
-      // minimum: 1,
-      // Disable to check if tx is validated on server
+			fieldNumber: 1,
+			// Disable to check if tx is validated on server
+			// minimum: 1,
+			// Disable to check if tx is validated on server
 			// maximum: 64,
 		},
 		mandatoryKeys: {
 			type: 'array',
 			items: {
-        dataType: 'bytes',
-				minLength: 32,
-				maxLength: 32,
+				dataType: 'bytes',
+				// Disable to check if tx is validated on server
+				// minLength: 32,
+				// Disable to check if tx is validated on server
+				// maxLength: 32,
 			},
-      fieldNumber: 2,
-      // Disable to check if tx is validated on server
-      // minItems: 0,
-      // Disable to check if tx is validated on server
+			fieldNumber: 2,
+			// Disable to check if tx is validated on server
+			// minItems: 0,
+			// Disable to check if tx is validated on server
 			// maxItems: 64,
 		},
 		optionalKeys: {
 			type: 'array',
 			items: {
 				dataType: 'bytes',
-				minLength: 32,
-				maxLength: 32,
+				// Disable to check if tx is validated on server
+				// minLength: 32,
+				// Disable to check if tx is validated on server
+				// maxLength: 32,
 			},
-      fieldNumber: 3,
-      // Disable to check if tx is validated on server
-      // minItems: 0,
-      // Disable to check if tx is validated on server
+			fieldNumber: 3,
+			// Disable to check if tx is validated on server
+			// minItems: 0,
+			// Disable to check if tx is validated on server
 			// maxItems: 64,
 		},
 	},
@@ -64,33 +68,49 @@ export interface KeysAssetJSON {
 }
 
 export const registerMultisig = ({
-  numberOfSignatures,
-  optionalKeys,
-  mandatoryKeys,
+	numberOfSignatures,
+	optionalKeys,
+	mandatoryKeys,
 	passphrase,
+	passphrases,
 	fee,
 	nonce,
 	networkIdentifier,
-}: BaseUnsignedTransactionAssetInput & KeysAsset): TransactionAssetOutput<KeysAssetJSON> => {
+}: BaseUnsignedTransactionAssetInput &
+	KeysAsset & { passphrases: string[] }): TransactionAssetOutput<KeysAssetJSON> => {
 	const { publicKey } = getPrivateAndPublicKeyFromPassphrase(passphrase);
 
-	const { id, ...rest } = signTransaction(
-		registerMultisigAssetSchema,
-		{
-			moduleID: 4,
-			assetID: 0,
-			nonce: BigInt(nonce),
-			fee: BigInt(fee),
-			senderPublicKey: publicKey,
-			asset: { mandatoryKeys, optionalKeys, numberOfSignatures },
-		},
-		networkIdentifier,
-		passphrase,
-	);
+	let txObject = {
+		id: null,
+		moduleID: 4,
+		assetID: 0,
+		nonce: BigInt(nonce),
+		fee: BigInt(fee),
+		senderPublicKey: publicKey,
+		asset: { mandatoryKeys, optionalKeys, numberOfSignatures },
+		signatures: [],
+	};
+
+	for (const pass of [passphrase, ...passphrases]) {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+		txObject = signMultiSignatureTransaction(
+			registerMultisigAssetSchema,
+			txObject,
+			networkIdentifier,
+			pass,
+			{
+				mandatoryKeys: [...mandatoryKeys] as Buffer[],
+				optionalKeys: [...optionalKeys] as Buffer[],
+			},
+			true,
+		) as any;
+	}
+
+	const { id, ...rest } = txObject;
 
 	return {
-		id: (id as Buffer).toString('hex'),
+		id: ((id as unknown) as Buffer).toString('hex'),
 		tx: codec.toJSON(getFullAssetSchema(registerMultisigAssetSchema), rest),
-		minFee: calcMinTxFee(registerMultisigAssetSchema, rest),
+		minFee: calcMinTxFee(registerMultisigAssetSchema, rest as any),
 	};
 };

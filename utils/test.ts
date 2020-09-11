@@ -7,6 +7,11 @@ import { networkIdentifier as devnetNetworkIdentifier } from './network';
 import { proofMisbehavior } from './transactions/dpos/pom';
 import { registerMultisig } from './transactions/keys/register_multisig';
 
+const DEBUG_RESPONSE = 0;
+
+// eslint-disable-next-line @typescript-eslint/no-empty-function, no-console
+const debug = DEBUG_RESPONSE ? console.debug : (..._data: any[]): void => {};
+
 export const transferTokens = async ({
 	amount,
 	recipientAddress,
@@ -48,9 +53,9 @@ export const transferTokens = async ({
 	} catch (res) {
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
 		const response = await res.json();
-		console.debug('Error during delegate registration');
+		debug('Error during delegate registration');
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-		console.debug(response);
+		debug(response);
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 		throw new ServerResponse<typeof res>(res.status, response);
 	}
@@ -62,14 +67,18 @@ export const covertToMultisig = async ({
 	mandatoryKeys,
 	numberOfSignatures,
 	fee,
+	passphrases,
 	networkIdentifier,
+	overrideSignatures,
 }: {
 	account: AccountSeed;
 	networkIdentifier?: Buffer;
 	fee: string;
 	optionalKeys: Buffer[];
 	mandatoryKeys: Buffer[];
+	passphrases: string[];
 	numberOfSignatures: number;
+	overrideSignatures?: Buffer[];
 }): Promise<ServerResponse<TransactionCreateResponse>> => {
 	const { id, tx } = registerMultisig({
 		senderPublicKey: account.publicKey,
@@ -78,9 +87,14 @@ export const covertToMultisig = async ({
 		numberOfSignatures,
 		nonce: BigInt(await getAccountNonce(account.address)).toString(),
 		passphrase: account.passphrase,
+		passphrases,
 		fee: convertLSKToBeddows(fee),
 		networkIdentifier: networkIdentifier ?? devnetNetworkIdentifier,
 	});
+
+	if (overrideSignatures) {
+		tx.signatures = overrideSignatures.map(s => s.toString('hex'));
+	}
 
 	try {
 		const res = await api.http.transactions.transactionsPost(tx);
@@ -91,9 +105,9 @@ export const covertToMultisig = async ({
 	} catch (res) {
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
 		const response = await res.json();
-		console.debug('Error during delegate registration');
+		debug('Error during delegate registration');
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-		console.debug(response);
+		debug(response);
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 		throw new ServerResponse<typeof res>(res.status, response);
 	}
@@ -128,9 +142,9 @@ export const registerDelegate = async ({
 	} catch (res) {
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
 		const response = await res.json();
-		console.debug('Error during delegate registration');
+		debug('Error during delegate registration');
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-		console.debug(response);
+		debug(response);
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 		throw new ServerResponse<typeof res>(res.status, response);
 	}
@@ -191,9 +205,9 @@ export const castVotes = async ({
 	} catch (res) {
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
 		const response = await res.json();
-		console.debug('Error during vote casting.');
+		debug('Error during vote casting.');
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-		console.debug(response);
+		debug(response);
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 		throw new ServerResponse<typeof res>(res.status, response);
 	}
@@ -268,9 +282,9 @@ export const unlockFunds = async ({
 	} catch (res) {
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
 		const response = await res.json();
-		console.debug('Error during vote casting.');
+		debug('Error during vote casting.');
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-		console.debug(response);
+		debug(response);
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 		throw new ServerResponse<typeof res>(res.status, response);
 	}
@@ -308,9 +322,9 @@ export const claimMisbehavior = async ({
 	} catch (res) {
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
 		const response = await res.json();
-		console.debug('Error during claiming misbehavior');
+		debug('Error during claiming misbehavior');
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-		console.debug(response);
+		debug(response);
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 		throw new ServerResponse<typeof res>(res.status, response);
 	}

@@ -191,7 +191,7 @@ describe('DPOS Module', () => {
 		});
 	});
 
-	describe.only('After bootstrap period', () => {
+	describe('After bootstrap period', () => {
 		let initDelegates: Buffer[];
 		const roundLength = 5;
 		const initRounds = 3; // It can't be lower than 3
@@ -307,7 +307,7 @@ describe('DPOS Module', () => {
 			const MAX_CONSECUTIVE_MISSED_BLOCKS = 2; // If no one else misses then it implies 2 rounds
 			const MAX_LAST_FORGED_HEIGHT_DIFF = roundLength * 5; // It forges any block in last 5 rounds
 
-			it.only('should be banned', async () => {
+			it('should be banned', async () => {
 				const delegateAddress = initDelegates[0].toString('hex');
 				const { password } = getGenesisKeyPairByAddress(delegateAddress);
 
