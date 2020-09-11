@@ -5,6 +5,7 @@ import { convertLSKToBeddows, register, vote, unlock, transfer } from './transac
 import { getAccountNonce, genesisAccount } from './accounts';
 import { networkIdentifier as devnetNetworkIdentifier } from './network';
 import { proofMisbehavior } from './transactions/dpos/pom';
+import { registerMultisig } from './transactions/keys/register_multisig';
 
 export const transferTokens = async ({
 	amount,
@@ -35,6 +36,49 @@ export const transferTokens = async ({
 		fee: convertLSKToBeddows('0.1'),
 		nonce: senderAccountNonce.toString(),
 		passphrase: passphrase ?? genesisAccount.passphrase,
+		networkIdentifier: networkIdentifier ?? devnetNetworkIdentifier,
+	});
+
+	try {
+		const res = await api.http.transactions.transactionsPost(tx);
+
+		expect(res.data.transactionId).toEqual(id);
+
+		return new ServerResponse<typeof res>(200, res);
+	} catch (res) {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
+		const response = await res.json();
+		console.debug('Error during delegate registration');
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+		console.debug(response);
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+		throw new ServerResponse<typeof res>(res.status, response);
+	}
+};
+
+export const covertToMultisig = async ({
+	account,
+	optionalKeys,
+	mandatoryKeys,
+	numberOfSignatures,
+	fee,
+	networkIdentifier,
+}: {
+	account: AccountSeed;
+	networkIdentifier?: Buffer;
+	fee: string;
+	optionalKeys: Buffer[];
+	mandatoryKeys: Buffer[];
+	numberOfSignatures: number;
+}): Promise<ServerResponse<TransactionCreateResponse>> => {
+	const { id, tx } = registerMultisig({
+		senderPublicKey: account.publicKey,
+		mandatoryKeys,
+		optionalKeys,
+		numberOfSignatures,
+		nonce: BigInt(await getAccountNonce(account.address)).toString(),
+		passphrase: account.passphrase,
+		fee: convertLSKToBeddows(fee),
 		networkIdentifier: networkIdentifier ?? devnetNetworkIdentifier,
 	});
 
