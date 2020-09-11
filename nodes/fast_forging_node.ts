@@ -1,8 +1,10 @@
 import { createApplication } from '../utils/application';
 
 const app = createApplication({
-	genesisConfig: { blockTime: 2 },
-	forging: { waitThreshold: 1, force: true },
+	config: {
+		genesisConfig: { blockTime: 3 },
+		forging: { waitThreshold: 1, force: true },
+	},
 });
 
 app
