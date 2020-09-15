@@ -268,3 +268,24 @@ export const claimMisbehavior = async ({
 
 	return postTransaction(tx, id);
 };
+
+export const extractSignatures = (
+	tx: {
+		asset: { mandatoryKeys: string[]; optionalKeys: string[]; numberOfSignatures: number };
+		signatures: string[];
+	},
+	senderSignatureIncluded: boolean,
+) => {
+	if (senderSignatureIncluded) {
+		const senderSignature = tx.signatures[0];
+		const mandatorySignatures = tx.signatures.slice(1, tx.asset.mandatoryKeys.length + 1);
+		const optionalSignatures = tx.signatures.slice(tx.asset.mandatoryKeys.length + 1);
+
+		return { senderSignature, mandatorySignatures, optionalSignatures };
+	}
+
+	const senderSignature = undefined;
+	const mandatorySignatures = tx.signatures.slice(0, tx.asset.mandatoryKeys.length);
+	const optionalSignatures = tx.signatures.slice(tx.asset.mandatoryKeys.length + 1);
+	return { senderSignature, mandatorySignatures, optionalSignatures };
+};

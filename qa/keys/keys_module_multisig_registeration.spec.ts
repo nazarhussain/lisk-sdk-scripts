@@ -2,30 +2,9 @@ import { getRandomBytes } from '@liskhq/lisk-cryptography';
 import { AccountSeed } from '../../types';
 import { buildAccount, buildAccounts, getAccount, getAccountNonce } from '../../utils/accounts';
 import { networkIdentifier, waitForBlock } from '../../utils/network';
-import { covertToMultisig, postTransaction } from '../../utils/test';
+import { covertToMultisig, extractSignatures, postTransaction } from '../../utils/test';
 import { convertLSKToBeddows } from '../../utils/transactions';
 import { registerMultisig } from '../../utils/transactions/keys/register_multisig';
-
-const extractSignatures = (
-	tx: {
-		asset: { mandatoryKeys: string[]; optionalKeys: string[]; numberOfSignatures: number };
-		signatures: string[];
-	},
-	senderSignatureIncluded: boolean,
-) => {
-	if (senderSignatureIncluded) {
-		const senderSignature = tx.signatures[0];
-		const mandatorySignatures = tx.signatures.slice(1, tx.asset.mandatoryKeys.length + 1);
-		const optionalSignatures = tx.signatures.slice(tx.asset.mandatoryKeys.length + 1);
-
-		return { senderSignature, mandatorySignatures, optionalSignatures };
-	}
-
-	const senderSignature = undefined;
-	const mandatorySignatures = tx.signatures.slice(0, tx.asset.mandatoryKeys.length);
-	const optionalSignatures = tx.signatures.slice(tx.asset.mandatoryKeys.length + 1);
-	return { senderSignature, mandatorySignatures, optionalSignatures };
-};
 
 describe('multisig registration', () => {
 	let account: AccountSeed;
@@ -895,7 +874,7 @@ describe('multisig registration', () => {
 			});
 		});
 
-		describe.only('When sender is member', () => {
+		describe('When sender is member', () => {
 			let sender: AccountSeed;
 			let account1: AccountSeed;
 			let account2: AccountSeed;
