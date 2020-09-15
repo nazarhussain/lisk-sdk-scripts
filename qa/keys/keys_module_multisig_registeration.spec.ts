@@ -1,24 +1,10 @@
-/*
- * Copyright © 2020 Lisk Foundation
- *
- * See the LICENSE file at the top-level directory of this distribution
- * for licensing information.
- *
- * Unless otherwise agreed in a custom licensing agreement with the Lisk Foundation,
- * no part of this software, including this file, may be copied, modified,
- * propagated, or distributed except according to the terms contained in the
- * LICENSE file.
- *
- * Removal or modification of this copyright notice is prohibited.
- */
-
 import { getRandomBytes } from '@liskhq/lisk-cryptography';
 import { AccountSeed } from '../../types';
 import { buildAccount, buildAccounts, getAccount } from '../../utils/accounts';
 import { waitForBlock } from '../../utils/network';
 import { covertToMultisig } from '../../utils/test';
 
-describe('register asset', () => {
+describe('multisig registration', () => {
 	let account: AccountSeed;
 
 	describe('validateSchema', () => {
@@ -530,6 +516,68 @@ describe('register asset', () => {
 						},
 					],
 				},
+			});
+		});
+	});
+
+	describe('use cases', () => {
+		describe('When sender is not member', () => {
+			describe('2 mandatory keys; 2 optional keys; numberofSignature: 4; Sender Signature present as first signature. All members signatures present.', () => {
+				it.todo('should be accepted');
+			});
+
+			describe('2 mandatory keys; Sender Signature present as first signature. All members signatures present.', () => {
+				it.todo('should be accepted');
+			});
+
+			describe('2 optional keys; Sender Signature present as first signature. All members signatures present.', () => {
+				it.todo('should be accepted');
+			});
+
+			describe('2 mandatory keys; 2 optional keys; Sender Signature present as first signature. All members signatures present but not in order for each key group.', () => {
+				it.todo('should be rejected');
+			});
+
+			describe('2 mandatory keys; 2 optional keys; Sender Signature present as first signature. All members signatures present but only Mandatory in order for each key group.', () => {
+				it.todo('should be rejected');
+			});
+
+			describe('2 mandatory keys; 2 optional keys; Sender Signature present as first signature. All members signatures missing.', () => {
+				it.todo('should be rejected');
+			});
+
+			describe('2 mandatory keys; 2 optional keys; Sender Signature present as first signature. All members signatures present but only Optional in order for each key group.', () => {
+				it.todo('should be rejected');
+			});
+
+			describe('2 mandatory keys; 2 optional keys; Sender Signature present as last signature. All members signatures present.', () => {
+				it.todo('should be rejected');
+			});
+
+			describe('2 mandatory keys; 2 optional keys; Sender Signature not present. All members signatures present.', () => {
+				it.todo('should be rejected');
+			});
+
+			describe('2 mandatory keys; Sender Signature present as first signature. Some members signatures present.', () => {
+				it.todo('should be rejected');
+			});
+
+			describe('2 optional keys; Sender Signature present as first signature. Some members signatures present.', () => {
+				it.todo('should be rejected');
+			});
+		});
+
+		describe('When sender is member', () => {
+			describe('W3 mandatory keys; 2 optional keys; Sender Signature present as first signature and as member. All members signatures present.', () => {
+				it.todo('should be accepted');
+			});
+
+			describe('2 mandatory keys; Sender Signature present as first signature. All members signatures present.', () => {
+				it.todo('should be accepted');
+			});
+
+			describe('2 optional keys; Sender Signature present as first signature. All members signatures present.', () => {
+				it.todo('should be accepted');
 			});
 		});
 	});

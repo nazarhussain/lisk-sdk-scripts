@@ -65,7 +65,7 @@ export const buildAccount = async ({
 export const buildAccounts = async ({
 	balance,
 	count,
-	networkIdentifier
+	networkIdentifier,
 }: {
 	balance: string;
 	count: number;
@@ -124,4 +124,16 @@ export const getGenesisKeyPairByAddress = (address: string): GenesisKeyPair => {
 	}
 
 	return pair;
+};
+
+export const sortAccounts = (a: { address: Buffer }, b: { address: Buffer }): number => {
+	if (a.address.length < b.address.length) {
+		return -1;
+	}
+
+	if (a.address.length > b.address.length) {
+		return 1;
+	}
+
+	return a.address.compare(b.address);
 };
