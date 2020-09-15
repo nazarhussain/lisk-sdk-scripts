@@ -13,6 +13,7 @@ export {
 	BlockHeader as BlockHeaderJSON,
 	Transaction,
 	TransactionCreateResponse,
+	TransactionRequest,
 	Account as AccountJSON,
 } from 'lisk-http-api-client';
 export type BlockJSON = BlockResponseData;

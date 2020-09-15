@@ -1,8 +1,31 @@
 import { getRandomBytes } from '@liskhq/lisk-cryptography';
 import { AccountSeed } from '../../types';
-import { buildAccount, buildAccounts, getAccount } from '../../utils/accounts';
-import { waitForBlock } from '../../utils/network';
-import { covertToMultisig } from '../../utils/test';
+import { buildAccount, buildAccounts, getAccount, getAccountNonce } from '../../utils/accounts';
+import { networkIdentifier, waitForBlock } from '../../utils/network';
+import { covertToMultisig, postTransaction } from '../../utils/test';
+import { convertLSKToBeddows } from '../../utils/transactions';
+import { registerMultisig } from '../../utils/transactions/keys/register_multisig';
+
+const extractSignatures = (
+	tx: {
+		asset: { mandatoryKeys: string[]; optionalKeys: string[]; numberOfSignatures: number };
+		signatures: string[];
+	},
+	senderSignatureIncluded: boolean,
+) => {
+	if (senderSignatureIncluded) {
+		const senderSignature = tx.signatures[0];
+		const mandatorySignatures = tx.signatures.slice(1, tx.asset.mandatoryKeys.length + 1);
+		const optionalSignatures = tx.signatures.slice(tx.asset.mandatoryKeys.length + 1);
+
+		return { senderSignature, mandatorySignatures, optionalSignatures };
+	}
+
+	const senderSignature = undefined;
+	const mandatorySignatures = tx.signatures.slice(0, tx.asset.mandatoryKeys.length);
+	const optionalSignatures = tx.signatures.slice(tx.asset.mandatoryKeys.length + 1);
+	return { senderSignature, mandatorySignatures, optionalSignatures };
+};
 
 describe('multisig registration', () => {
 	let account: AccountSeed;
@@ -521,63 +544,420 @@ describe('multisig registration', () => {
 	});
 
 	describe('use cases', () => {
+		let sender: AccountSeed;
+		let account1: AccountSeed;
+		let account2: AccountSeed;
+		let account3: AccountSeed;
+		let account4: AccountSeed;
+		let passphrases: string[];
+
+		beforeEach(async () => {
+			[sender, account1, account2, account3, account4] = (
+				await buildAccounts({
+					balance: '100',
+					count: 5,
+				})
+			).sort((a, b) => a.publicKey.compare(b.publicKey));
+			account = sender;
+			passphrases = [account1, account2, account3, account4].map(a => a.passphrase);
+			await waitForBlock({ heightOffset: 1 });
+		});
+
 		describe('When sender is not member', () => {
 			describe('2 mandatory keys; 2 optional keys; numberofSignature: 4; Sender Signature present as first signature. All members signatures present.', () => {
-				it.todo('should be accepted');
+				it('should be accepted', async () => {
+					await expect(
+						covertToMultisig({
+							numberOfSignatures: 4,
+							account,
+							fee: '2',
+							mandatoryKeys: [account1.publicKey, account2.publicKey],
+							optionalKeys: [account3.publicKey, account4.publicKey],
+							passphrases,
+						}),
+					).resolves.not.toBeUndefined();
+				});
 			});
 
 			describe('2 mandatory keys; Sender Signature present as first signature. All members signatures present.', () => {
-				it.todo('should be accepted');
+				it('should be accepted', async () => {
+					await expect(
+						covertToMultisig({
+							numberOfSignatures: 2,
+							account,
+							fee: '2',
+							mandatoryKeys: [account1.publicKey, account2.publicKey],
+							optionalKeys: [],
+							passphrases,
+						}),
+					).resolves.not.toBeUndefined();
+				});
 			});
 
 			describe('2 optional keys; Sender Signature present as first signature. All members signatures present.', () => {
-				it.todo('should be accepted');
+				it('should be accepted', async () => {
+					await expect(
+						covertToMultisig({
+							numberOfSignatures: 2,
+							account,
+							fee: '2',
+							mandatoryKeys: [],
+							optionalKeys: [account3.publicKey, account4.publicKey],
+							passphrases,
+						}),
+					).resolves.not.toBeUndefined();
+				});
 			});
 
 			describe('2 mandatory keys; 2 optional keys; Sender Signature present as first signature. All members signatures present but not in order for each key group.', () => {
-				it.todo('should be rejected');
+				it('should be rejected', async () => {
+					const { id, tx } = registerMultisig({
+						senderPublicKey: account.publicKey,
+						mandatoryKeys: [account1.publicKey, account2.publicKey],
+						optionalKeys: [account3.publicKey, account4.publicKey],
+						numberOfSignatures: 4,
+						nonce: BigInt(await getAccountNonce(account.address)).toString(),
+						passphrase: account.passphrase,
+						passphrases,
+						fee: convertLSKToBeddows('2'),
+						networkIdentifier,
+					});
+					const { senderSignature, mandatorySignatures, optionalSignatures } = extractSignatures(
+						tx,
+						true,
+					);
+
+					const signatures = [
+						...optionalSignatures,
+						...mandatorySignatures,
+						senderSignature,
+					] as string[];
+
+					await expect(postTransaction({ ...tx, signatures }, id)).rejects.toEqual({
+						status: 409,
+						response: {
+							errors: [
+								{
+									message: expect.toInclude('Failed to validate signature'),
+								},
+							],
+						},
+					});
+				});
 			});
 
 			describe('2 mandatory keys; 2 optional keys; Sender Signature present as first signature. All members signatures present but only Mandatory in order for each key group.', () => {
-				it.todo('should be rejected');
+				it('should be rejected', async () => {
+					const { id, tx } = registerMultisig({
+						senderPublicKey: account.publicKey,
+						mandatoryKeys: [account1.publicKey, account2.publicKey],
+						optionalKeys: [account3.publicKey, account4.publicKey],
+						numberOfSignatures: 4,
+						nonce: BigInt(await getAccountNonce(account.address)).toString(),
+						passphrase: account.passphrase,
+						passphrases,
+						fee: convertLSKToBeddows('2'),
+						networkIdentifier,
+					});
+
+					const { senderSignature, mandatorySignatures, optionalSignatures } = extractSignatures(
+						tx,
+						true,
+					);
+
+					const signatures = [
+						senderSignature,
+						...mandatorySignatures,
+						...optionalSignatures.reverse(),
+					] as string[];
+
+					await expect(postTransaction({ ...tx, signatures }, id)).rejects.toEqual({
+						status: 409,
+						response: {
+							errors: [
+								{
+									message: expect.toInclude('Failed to validate signature'),
+								},
+							],
+						},
+					});
+				});
 			});
 
 			describe('2 mandatory keys; 2 optional keys; Sender Signature present as first signature. All members signatures missing.', () => {
-				it.todo('should be rejected');
+				it('should be rejected', async () => {
+					const { id, tx } = registerMultisig({
+						senderPublicKey: account.publicKey,
+						mandatoryKeys: [account1.publicKey, account2.publicKey],
+						optionalKeys: [account3.publicKey, account4.publicKey],
+						numberOfSignatures: 4,
+						nonce: BigInt(await getAccountNonce(account.address)).toString(),
+						passphrase: account.passphrase,
+						passphrases,
+						fee: convertLSKToBeddows('2'),
+						networkIdentifier,
+					});
+
+					const { senderSignature, mandatorySignatures, optionalSignatures } = extractSignatures(
+						tx,
+						true,
+					);
+
+					const signatures = [
+						senderSignature,
+						...mandatorySignatures.map(() => ''),
+						...optionalSignatures.map(() => ''),
+					] as string[];
+
+					await expect(postTransaction({ ...tx, signatures }, id)).rejects.toEqual({
+						status: 409,
+						response: {
+							errors: [
+								{
+									message: 'A valid signature is required for each registered key.',
+								},
+							],
+						},
+					});
+				});
 			});
 
 			describe('2 mandatory keys; 2 optional keys; Sender Signature present as first signature. All members signatures present but only Optional in order for each key group.', () => {
-				it.todo('should be rejected');
+				it('should be rejected', async () => {
+					const { id, tx } = registerMultisig({
+						senderPublicKey: account.publicKey,
+						mandatoryKeys: [account1.publicKey, account2.publicKey],
+						optionalKeys: [account3.publicKey, account4.publicKey],
+						numberOfSignatures: 4,
+						nonce: BigInt(await getAccountNonce(account.address)).toString(),
+						passphrase: account.passphrase,
+						passphrases,
+						fee: convertLSKToBeddows('2'),
+						networkIdentifier,
+					});
+
+					const { senderSignature, mandatorySignatures, optionalSignatures } = extractSignatures(
+						tx,
+						true,
+					);
+
+					const signatures = [
+						senderSignature,
+						...mandatorySignatures.reverse(),
+						...optionalSignatures,
+					] as string[];
+
+					await expect(postTransaction({ ...tx, signatures }, id)).rejects.toEqual({
+						status: 409,
+						response: {
+							errors: [
+								{
+									message: expect.toInclude('Failed to validate signature'),
+								},
+							],
+						},
+					});
+				});
 			});
 
 			describe('2 mandatory keys; 2 optional keys; Sender Signature present as last signature. All members signatures present.', () => {
-				it.todo('should be rejected');
+				it('should be rejected', async () => {
+					const { id, tx } = registerMultisig({
+						senderPublicKey: account.publicKey,
+						mandatoryKeys: [account1.publicKey, account2.publicKey],
+						optionalKeys: [account3.publicKey, account4.publicKey],
+						numberOfSignatures: 4,
+						nonce: BigInt(await getAccountNonce(account.address)).toString(),
+						passphrase: account.passphrase,
+						passphrases,
+						fee: convertLSKToBeddows('2'),
+						networkIdentifier,
+					});
+
+					const { senderSignature, mandatorySignatures, optionalSignatures } = extractSignatures(
+						tx,
+						true,
+					);
+
+					const signatures = [
+						...mandatorySignatures,
+						...optionalSignatures,
+						senderSignature,
+					] as string[];
+
+					await expect(postTransaction({ ...tx, signatures }, id)).rejects.toEqual({
+						status: 409,
+						response: {
+							errors: [
+								{
+									message: expect.toInclude('Failed to validate signature'),
+								},
+							],
+						},
+					});
+				});
 			});
 
 			describe('2 mandatory keys; 2 optional keys; Sender Signature not present. All members signatures present.', () => {
-				it.todo('should be rejected');
+				it('should be rejected', async () => {
+					const { id, tx } = registerMultisig({
+						senderPublicKey: account.publicKey,
+						mandatoryKeys: [account1.publicKey, account2.publicKey],
+						optionalKeys: [account3.publicKey, account4.publicKey],
+						numberOfSignatures: 4,
+						nonce: BigInt(await getAccountNonce(account.address)).toString(),
+						passphrase: account.passphrase,
+						passphrases,
+						fee: convertLSKToBeddows('2'),
+						networkIdentifier,
+					});
+
+					const { mandatorySignatures, optionalSignatures } = extractSignatures(tx, true);
+
+					const signatures = [...mandatorySignatures, ...optionalSignatures] as string[];
+
+					await expect(postTransaction({ ...tx, signatures }, id)).rejects.toEqual({
+						status: 409,
+						response: {
+							errors: [
+								{
+									message:
+										'Error: The number of mandatory, optional and sender keys should match the number of signatures',
+								},
+							],
+						},
+					});
+				});
 			});
 
 			describe('2 mandatory keys; Sender Signature present as first signature. Some members signatures present.', () => {
-				it.todo('should be rejected');
+				it('should be rejected', async () => {
+					const { id, tx } = registerMultisig({
+						senderPublicKey: account.publicKey,
+						mandatoryKeys: [account1.publicKey, account2.publicKey],
+						optionalKeys: [],
+						numberOfSignatures: 2,
+						nonce: BigInt(await getAccountNonce(account.address)).toString(),
+						passphrase: account.passphrase,
+						passphrases,
+						fee: convertLSKToBeddows('2'),
+						networkIdentifier,
+					});
+
+					const { senderSignature, mandatorySignatures } = extractSignatures(tx, true);
+
+					const signatures = [senderSignature, mandatorySignatures[0]] as string[];
+
+					await expect(postTransaction({ ...tx, signatures }, id)).rejects.toEqual({
+						status: 409,
+						response: {
+							errors: [
+								{
+									message:
+										'Error: The number of mandatory, optional and sender keys should match the number of signatures',
+								},
+							],
+						},
+					});
+				});
 			});
 
 			describe('2 optional keys; Sender Signature present as first signature. Some members signatures present.', () => {
-				it.todo('should be rejected');
+				it('should be rejected', async () => {
+					const { id, tx } = registerMultisig({
+						senderPublicKey: account.publicKey,
+						mandatoryKeys: [],
+						optionalKeys: [account3.publicKey, account4.publicKey],
+						numberOfSignatures: 2,
+						nonce: BigInt(await getAccountNonce(account.address)).toString(),
+						passphrase: account.passphrase,
+						passphrases,
+						fee: convertLSKToBeddows('2'),
+						networkIdentifier,
+					});
+
+					const { senderSignature, optionalSignatures } = extractSignatures(tx, true);
+
+					const signatures = [senderSignature, optionalSignatures[0]] as string[];
+
+					await expect(postTransaction({ ...tx, signatures }, id)).rejects.toEqual({
+						status: 409,
+						response: {
+							errors: [
+								{
+									message:
+										'Error: The number of mandatory, optional and sender keys should match the number of signatures',
+								},
+							],
+						},
+					});
+				});
 			});
 		});
 
-		describe('When sender is member', () => {
-			describe('W3 mandatory keys; 2 optional keys; Sender Signature present as first signature and as member. All members signatures present.', () => {
-				it.todo('should be accepted');
+		describe.only('When sender is member', () => {
+			let sender: AccountSeed;
+			let account1: AccountSeed;
+			let account2: AccountSeed;
+			let account3: AccountSeed;
+			let account4: AccountSeed;
+			let passphrases: string[];
+
+			beforeEach(async () => {
+				[sender, account1, account2, account3, account4] = (
+					await buildAccounts({
+						balance: '100',
+						count: 5,
+					})
+				).sort((a, b) => a.publicKey.compare(b.publicKey));
+				account = sender;
+				passphrases = [account1, account2, account3, account4].map(a => a.passphrase);
+				await waitForBlock({ heightOffset: 1 });
+			});
+
+			describe('2 mandatory keys; 2 optional keys; Sender Signature present as first signature and as member. All members signatures present.', () => {
+				it('should be accepted', async () => {
+					await expect(
+						covertToMultisig({
+							numberOfSignatures: 4,
+							account,
+							fee: '2',
+							mandatoryKeys: [account.publicKey, account1.publicKey, account2.publicKey],
+							optionalKeys: [account3.publicKey, account4.publicKey],
+							passphrases,
+						}),
+					).resolves.not.toBeUndefined();
+				});
 			});
 
 			describe('2 mandatory keys; Sender Signature present as first signature. All members signatures present.', () => {
-				it.todo('should be accepted');
+				it('should be accepted', async () => {
+					await expect(
+						covertToMultisig({
+							numberOfSignatures: 3,
+							account,
+							fee: '2',
+							mandatoryKeys: [account.publicKey, account1.publicKey, account2.publicKey],
+							optionalKeys: [],
+							passphrases,
+						}),
+					).resolves.not.toBeUndefined();
+				});
 			});
 
 			describe('2 optional keys; Sender Signature present as first signature. All members signatures present.', () => {
-				it.todo('should be accepted');
+				it('should be accepted', async () => {
+					await expect(
+						covertToMultisig({
+							numberOfSignatures: 3,
+							account,
+							fee: '2',
+							mandatoryKeys: [],
+							optionalKeys: [account.publicKey, account3.publicKey, account4.publicKey],
+							passphrases,
+						}),
+					).resolves.not.toBeUndefined();
+				});
 			});
 		});
 	});
