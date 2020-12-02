@@ -50,18 +50,21 @@ export interface BaseTransactionAssetInput {
 	networkIdentifier: Buffer;
 }
 
+export interface SignedTransactionObject<T> {
+	id: Buffer;
+	moduleID: number;
+	assetID: number;
+	senderPublicKey: Buffer;
+	fee: bigint;
+	nonce: bigint;
+	networkIdentifier: Buffer;
+	signatures: Buffer[];
+	asset: T;
+}
+
 export interface TransactionAssetOutput<T> {
-	id: string;
-	tx: {
-		moduleID: number;
-		assetID: number;
-		senderPublicKey: string;
-		fee: string;
-		nonce: string;
-		networkIdentifier: string;
-		signatures: string[];
-		asset: T;
-	};
+	id: Buffer;
+	tx: Omit<SignedTransactionObject<T>, 'id'>;
 	minFee: bigint;
 }
 
@@ -74,9 +77,12 @@ export const getFullAssetSchema = (assetSchema: Schema): Schema =>
 		properties: { asset: assetSchema },
 	}) as Schema;
 
-export const calcMinTxFee = (assetSchema: Schema, tx: Record<string, unknown>): bigint => {
+export const calcMinTxFee = (
+	assetSchema: Schema,
+	tx: Omit<SignedTransactionObject<Record<string, unknown>>, 'id'>,
+): bigint => {
 	// eslint-disable-next-line @typescript-eslint/ban-types
-	const assetBytes = codec.encode(assetSchema, tx.asset as object);
+	const assetBytes = codec.encode(assetSchema, (tx.asset as unknown) as object);
 	const bytes = codec.encode(baseAssetSchema, { ...tx, asset: assetBytes });
 	return BigInt(bytes.length * genesisConfig.genesisConfig.minFeePerByte);
 };

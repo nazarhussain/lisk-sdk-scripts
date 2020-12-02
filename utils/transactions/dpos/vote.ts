@@ -1,12 +1,11 @@
 import { getPrivateAndPublicKeyFromPassphrase } from '@liskhq/lisk-cryptography';
 import { signTransaction } from '@liskhq/lisk-transactions';
-import { codec } from '@liskhq/lisk-codec';
 
 import {
 	BaseUnsignedTransactionAssetInput,
 	TransactionAssetOutput,
-	getFullAssetSchema,
 	calcMinTxFee,
+	SignedTransactionObject,
 } from '../common';
 
 export const voteAssetSchema = {
@@ -45,10 +44,6 @@ export interface Vote {
 	readonly delegateAddress: Buffer;
 	readonly amount: bigint;
 }
-export interface VoteJSON {
-	readonly delegateAddress: string;
-	readonly amount: string;
-}
 
 export const vote = ({
 	votes,
@@ -58,7 +53,7 @@ export const vote = ({
 	networkIdentifier,
 }: BaseUnsignedTransactionAssetInput & {
 	votes: Vote[];
-}): TransactionAssetOutput<{ votes: VoteJSON[] }> => {
+}): TransactionAssetOutput<{ votes: Vote[] }> => {
 	const { publicKey } = getPrivateAndPublicKeyFromPassphrase(passphrase);
 
 	const { id, ...rest } = signTransaction(
@@ -73,11 +68,11 @@ export const vote = ({
 		},
 		networkIdentifier,
 		passphrase,
-	);
+	)as unknown as SignedTransactionObject<{ votes: Vote[] }>;
 
 	return {
-		id: (id as Buffer).toString('hex'),
-		tx: codec.toJSON(getFullAssetSchema(voteAssetSchema), rest),
+		id,
+		tx: rest,
 		minFee: calcMinTxFee(voteAssetSchema, rest),
 	};
 };

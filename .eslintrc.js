@@ -29,6 +29,8 @@ module.exports = {
 			},
 		],
 		'new-cap': ['error', { capIsNewExceptions: ['Given', 'Then', 'When', 'Before'] }],
+		'no-underscore-dangle': 'off',
+		'import/prefer-default-export': 'off',
 	},
 	globals: {
 		BigInt: true,

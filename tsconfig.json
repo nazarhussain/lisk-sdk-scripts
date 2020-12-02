@@ -21,5 +21,5 @@
 		"rootDir": "./",
 		"outDir": "./dist"
 	},
-	"include": ["./qa/**/*.ts", "./utils/**/*.ts", "./utils/**/*.json", "./config/**/*.json"]
+	"include": ["./qa/**/*.ts", "./nodes/**/*.ts",  "./utils/**/*.ts", "./misc/**/*.ts", "./utils/**/*.json", "./config/**/*.json"]
 }

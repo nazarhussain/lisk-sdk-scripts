@@ -1,12 +1,11 @@
 import { getPrivateAndPublicKeyFromPassphrase } from '@liskhq/lisk-cryptography';
 import { signTransaction } from '@liskhq/lisk-transactions';
-import { codec } from '@liskhq/lisk-codec';
 
 import {
 	BaseUnsignedTransactionAssetInput,
 	TransactionAssetOutput,
-	getFullAssetSchema,
 	calcMinTxFee,
+	SignedTransactionObject,
 } from '../common';
 
 export const unlockAssetSchema = {
@@ -50,11 +49,6 @@ export interface Unlock {
 	readonly amount: bigint;
 	readonly unvoteHeight: number;
 }
-export interface UnlockJSON {
-	readonly delegateAddress: string;
-	readonly amount: string;
-	readonly unvoteHeight: number;
-}
 
 export const unlock = ({
 	unlockObjects,
@@ -64,7 +58,7 @@ export const unlock = ({
 	networkIdentifier,
 }: BaseUnsignedTransactionAssetInput & {
 	unlockObjects: Unlock[];
-}): TransactionAssetOutput<{ unlockObjects: UnlockJSON[] }> => {
+}): TransactionAssetOutput<{ unlockObjects: Unlock[] }> => {
 	const { publicKey } = getPrivateAndPublicKeyFromPassphrase(passphrase);
 
 	const { id, ...rest } = signTransaction(
@@ -79,11 +73,11 @@ export const unlock = ({
 		},
 		networkIdentifier,
 		passphrase,
-	);
+	) as unknown as SignedTransactionObject<{ unlockObjects: Unlock[] }>;
 
 	return {
-		id: (id as Buffer).toString('hex'),
-		tx: codec.toJSON(getFullAssetSchema(unlockAssetSchema), rest),
+		id,
+		tx: rest,
 		minFee: calcMinTxFee(unlockAssetSchema, rest),
 	};
 };

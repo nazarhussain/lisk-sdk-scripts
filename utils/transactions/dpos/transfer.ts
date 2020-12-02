@@ -7,6 +7,7 @@ import {
 	TransactionAssetOutput,
 	getFullAssetSchema,
 	calcMinTxFee,
+	SignedTransactionObject,
 } from '../common';
 
 export const transferAssetSchema = {
@@ -43,8 +44,8 @@ export const transfer = ({
 	networkIdentifier,
 }: BaseUnsignedTransactionAssetInput & {
 	recipientAddress: Buffer;
-	amount: string;
-}): TransactionAssetOutput<{ recipientAddress: string; amount: string }> => {
+	amount: bigint;
+}): TransactionAssetOutput<{ recipientAddress: Buffer; amount: bigint }> => {
 	const { publicKey } = getPrivateAndPublicKeyFromPassphrase(passphrase);
 
 	const { id, ...rest } = signTransaction(
@@ -59,11 +60,11 @@ export const transfer = ({
 		},
 		networkIdentifier,
 		passphrase,
-	);
+	) as unknown as SignedTransactionObject<{ recipientAddress: Buffer; amount: bigint }>;
 
 	return {
-		id: (id as Buffer).toString('hex'),
-		tx: codec.toJSON(getFullAssetSchema(transferAssetSchema), rest),
+		id,
+		tx: rest,
 		minFee: calcMinTxFee(transferAssetSchema, rest),
 	};
 };
@@ -120,7 +121,7 @@ export const transferMultisig = ({
 	const { id, ...rest } = txObject;
 
 	return {
-		id: ((id as unknown) as Buffer).toString('hex'),
+		id: ((id as unknown) as Buffer),
 		tx: codec.toJSON(getFullAssetSchema(transferAssetSchema), rest),
 		minFee: calcMinTxFee(transferAssetSchema, rest as any),
 	};

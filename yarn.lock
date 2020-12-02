@@ -512,6 +512,19 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
+"@liskhq/lisk-api-client@5.0.0-debug.3":
+  version "5.0.0-debug.3"
+  resolved "https://npm.lisk.io/@liskhq%2flisk-api-client/-/lisk-api-client-5.0.0-debug.3.tgz#26f978591054989254b3fd80ee018aa0f0a977bb"
+  integrity sha512-ORxt46q8jdEGKi8wBJLpqnFBZ6bnIFxyjVjDbZPFxzmoHAFW+4FUpnjIp/GkL0fh1jimhq28EudXV+LWESycHw==
+  dependencies:
+    "@liskhq/lisk-codec" "^0.1.0-debug.3"
+    "@liskhq/lisk-cryptography" "^3.0.0-debug.3"
+    "@liskhq/lisk-transactions" "^5.0.0-debug.3"
+    isomorphic-ws "4.0.1"
+    pm2-axon "4.0.0"
+    pm2-axon-rpc "0.6.0"
+    ws "7.4.0"
+
 "@liskhq/lisk-bft@^0.2.0-alpha.0":
   version "0.2.0-alpha.0"
   resolved "https://npm.lisk.io/@liskhq%2flisk-bft/-/lisk-bft-0.2.0-alpha.0.tgz#db3ecfaae8528f801c51ec2e7c9bd35f9328034f"
@@ -546,6 +559,14 @@
     "@liskhq/lisk-utils" "^0.1.0-alpha.0"
     "@liskhq/lisk-validator" "^0.5.0-alpha.0"
 
+"@liskhq/lisk-codec@^0.1.0", "@liskhq/lisk-codec@^0.1.0-debug.3":
+  version "0.1.0"
+  resolved "https://npm.lisk.io/@liskhq%2flisk-codec/-/lisk-codec-0.1.0.tgz#deea355d1dcbf83432f213a57c4df087b45f091d"
+  integrity sha512-VM5aF23JoLDuRI6pJ76QN3UymcxT6isgfRTtdD0DkUzoYkB1VrM2TvrmJenF7FRApJc0bCh/cGBtVKDTLyto5g==
+  dependencies:
+    "@liskhq/lisk-utils" "^0.1.0"
+    "@liskhq/lisk-validator" "^0.5.0"
+
 "@liskhq/lisk-cryptography@3.0.0-alpha.0", "@liskhq/lisk-cryptography@^3.0.0-alpha.0":
   version "3.0.0-alpha.0"
   resolved "https://npm.lisk.io/@liskhq%2flisk-cryptography/-/lisk-cryptography-3.0.0-alpha.0.tgz#c658481455e8de0dcd3ee8ea337a4f30d63304e4"
@@ -557,6 +578,18 @@
     varuint-bitcoin "1.1.2"
   optionalDependencies:
     sodium-native "2.4.6"
+
+"@liskhq/lisk-cryptography@^3.0.0", "@liskhq/lisk-cryptography@^3.0.0-debug.3":
+  version "3.0.0"
+  resolved "https://npm.lisk.io/@liskhq%2flisk-cryptography/-/lisk-cryptography-3.0.0.tgz#04a18d03f2b4d75e0a3f05c84890764f476bb8d4"
+  integrity sha512-eJqfHJjyZX7lRWFFHig3Y8e6oq4ineuEFj79OZjyLGn5KGyWCaYNdA2/enG1fdku8u6PC6prpQ3X9ew+gKTAeA==
+  dependencies:
+    buffer-reverse "1.0.1"
+    ed2curve "0.3.0"
+    tweetnacl "1.0.3"
+    varuint-bitcoin "1.1.2"
+  optionalDependencies:
+    sodium-native "3.2.0"
 
 "@liskhq/lisk-db@^0.1.0-alpha.0":
   version "0.1.0-alpha.0"
@@ -651,6 +684,15 @@
     "@liskhq/lisk-cryptography" "^3.0.0-alpha.0"
     "@liskhq/lisk-validator" "^0.5.0-alpha.0"
 
+"@liskhq/lisk-transactions@^5.0.0-debug.3":
+  version "5.0.0"
+  resolved "https://npm.lisk.io/@liskhq%2flisk-transactions/-/lisk-transactions-5.0.0.tgz#140ecdacbf8a4d4cdc0f06597a0bd37b8b01f0f7"
+  integrity sha512-+XZBxXfAcl4q5/B59cYQIvO1WJpBO9C0ku1UNRfCwEkWAsMqXDzT7Nl6N1BN8axk9ZOOTezmsEwUNTcIhBtKMg==
+  dependencies:
+    "@liskhq/lisk-codec" "^0.1.0"
+    "@liskhq/lisk-cryptography" "^3.0.0"
+    "@liskhq/lisk-validator" "^0.5.0"
+
 "@liskhq/lisk-tree@^0.1.0-alpha.0":
   version "0.1.0-alpha.0"
   resolved "https://npm.lisk.io/@liskhq%2flisk-tree/-/lisk-tree-0.1.0-alpha.0.tgz#e55dce0bcfbfa47026c1492d9ae1397341b20d1f"
@@ -665,6 +707,27 @@
   integrity sha512-2vFGEqrmbBBgTqN4AhLmJlXn8NwgBssKxnB+rq8FhSgZnL5/jiSueqGvou1isBWT/1urQqiPNMebM05IQcpNrg==
   dependencies:
     lodash.clonedeep "4.5.0"
+
+"@liskhq/lisk-utils@^0.1.0":
+  version "0.1.0"
+  resolved "https://npm.lisk.io/@liskhq%2flisk-utils/-/lisk-utils-0.1.0.tgz#b8f31e0bde5a8d0bf2bee9f6f7e6b9bfe2cd45b0"
+  integrity sha512-PR36Rxk6Nhg8Z6vvEIOpbeTuISaw23It6WhVyxEibH2RN2UPpUwDWR60BcIqZtR1FCK5vEcDMTvBXu1FgawbdA==
+  dependencies:
+    lodash.clonedeep "4.5.0"
+
+"@liskhq/lisk-validator@^0.5.0":
+  version "0.5.0"
+  resolved "https://npm.lisk.io/@liskhq%2flisk-validator/-/lisk-validator-0.5.0.tgz#59eb75d13578223e5524683b0e0c7116453eec48"
+  integrity sha512-V3WlzR3ASs/y4fhZ6FB2DGeUCNJwwH6KiqNBjMsR3LAUhbx5GsSTa+DeqcCSrjhhjTPxHN4lycxcIJn0M/ipSw==
+  dependencies:
+    "@liskhq/lisk-cryptography" "^3.0.0"
+    "@types/node" "12.12.11"
+    "@types/semver" "7.1.0"
+    "@types/validator" "12.0.1"
+    ajv "6.12.0"
+    debug "4.1.1"
+    semver "7.1.3"
+    validator "12.2.0"
 
 "@liskhq/lisk-validator@^0.5.0-alpha.0":
   version "0.5.0-alpha.0"
@@ -1923,6 +1986,13 @@ debug@^3.0:
   dependencies:
     ms "^2.1.1"
 
+debug@^4.2:
+  version "4.3.1"
+  resolved "https://npm.lisk.io/debug/-/debug-4.3.1.tgz#f0d229c505e0c6d8c49ac553d1b13dc183f6b2ee"
+  integrity sha512-doEwdvm4PCeK4K3RQN2ZC2BYUBaxwLARCqZmMjtF8a51J2Rb0xpVloFRnCODwqjpwnAoao4pelN8l3RJdv3gRQ==
+  dependencies:
+    ms "2.1.2"
+
 decamelize@^1.2.0:
   version "1.2.0"
   resolved "https://npm.lisk.io/decamelize/-/decamelize-1.2.0.tgz#f6534d15148269b20352e7bee26f501f9a191290"
@@ -2227,6 +2297,11 @@ escape-string-regexp@^2.0.0:
   version "2.0.0"
   resolved "https://npm.lisk.io/escape-string-regexp/-/escape-string-regexp-2.0.0.tgz#a30304e99daa32e23b2fd20f51babd07cffca344"
   integrity sha512-UpzcLCXolUWcNu5HtVMHYdXJjArjsF9C0aNnquZYY4uW/Vu0miy5YoWvbV345HauVvcAUnpRuhMMcqTcGOY2+w==
+
+escape-string-regexp@^4.0.0:
+  version "4.0.0"
+  resolved "https://npm.lisk.io/escape-string-regexp/-/escape-string-regexp-4.0.0.tgz#14ba83a5d373e3d311e5afca29cf5bfad965bf34"
+  integrity sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==
 
 escodegen@^1.14.1:
   version "1.14.3"
@@ -3342,6 +3417,11 @@ isobject@^3.0.0, isobject@^3.0.1:
   resolved "https://npm.lisk.io/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
   integrity sha1-TkMekrEalzFjaqH5yNHMvP2reN8=
 
+isomorphic-ws@4.0.1:
+  version "4.0.1"
+  resolved "https://npm.lisk.io/isomorphic-ws/-/isomorphic-ws-4.0.1.tgz#55fd4cd6c5e6491e76dc125938dd863f5cd4f2dc"
+  integrity sha512-BhBvN2MBpWTaSHdWRb/bwdZJ1WaehQ2L1KngkCkfLUGF0mAWAT1sQUQacEmQ0jXkFw/czDXPNQSL5u2/Krsz1w==
+
 isstream@~0.1.2:
   version "0.1.2"
   resolved "https://npm.lisk.io/isstream/-/isstream-0.1.2.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
@@ -4437,7 +4517,7 @@ ms@2.1.1:
   resolved "https://npm.lisk.io/ms/-/ms-2.1.1.tgz#30a5864eb3ebb0a66f2ebe6d727af06a09d86e0a"
   integrity sha512-tgp+dl5cGk28utYktBsrFqA7HKgrhgPsg6Z/EfhWI4gl1Hwq8B/GmY/0oXZ6nF8hDVesS/FpnYaD/kOWhYQvyg==
 
-ms@^2.1.1:
+ms@2.1.2, ms@^2.1.1:
   version "2.1.2"
   resolved "https://npm.lisk.io/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
   integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
@@ -4531,6 +4611,11 @@ node-gyp-build@^4.1.0:
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/node-gyp-build/-/node-gyp-build-4.2.1.tgz#f28f0d3d3ab268d48ab76c6f446f19bc3d0db9dc"
   integrity sha512-XyCKXsqZfLqHep1hhsMncoXuUNt/cXCjg1+8CLbu69V1TKuPiOeSGbL9n+k/ByKH8UT0p4rdIX8XkTRZV0i7Sw==
+
+node-gyp-build@^4.2.0:
+  version "4.2.3"
+  resolved "https://npm.lisk.io/node-gyp-build/-/node-gyp-build-4.2.3.tgz#ce6277f853835f718829efb47db20f3e4d9c4739"
+  integrity sha512-MN6ZpzmfNCRM+3t57PTJHgHyw/h4OWnZ6mR8P5j/uZtqQr46RRuDE/P+g3n0YR/AiYXeWixZZzaip77gdICfRg==
 
 node-gyp-build@~4.1.0:
   version "4.1.1"
@@ -4931,6 +5016,13 @@ pm2-axon-rpc@0.5.1:
   dependencies:
     debug "^3.0"
 
+pm2-axon-rpc@0.6.0:
+  version "0.6.0"
+  resolved "https://npm.lisk.io/pm2-axon-rpc/-/pm2-axon-rpc-0.6.0.tgz#ff7ec2627334e5de1bcc1181e532499a708ab9f8"
+  integrity sha512-xjYR0y1HpOopJ09VL2Qd5H1LajVN+QLPVZ1G+GesbORJDAZiStMhwECtOzm/Gx5ANQxL0usW8WZsElMfQq2hbw==
+  dependencies:
+    debug "^3.0"
+
 pm2-axon@3.3.0:
   version "3.3.0"
   resolved "https://npm.lisk.io/pm2-axon/-/pm2-axon-3.3.0.tgz#a9badfdb8e083fbd5d7d24317b4a21eb708f0735"
@@ -4940,6 +5032,16 @@ pm2-axon@3.3.0:
     amp-message "~0.1.1"
     debug "^3.0"
     escape-regexp "0.0.1"
+
+pm2-axon@4.0.0:
+  version "4.0.0"
+  resolved "https://npm.lisk.io/pm2-axon/-/pm2-axon-4.0.0.tgz#70925e9835e9156f278a843f27a8c94a6c22b1bc"
+  integrity sha512-A8dy0C57cRIm+kX58HrMcnvUdg8EdwCuCmavDdmFE4eoUE+5zfwGbDfZKCBVLNpDwjXPuXQQYZi3wQt/5xC8DQ==
+  dependencies:
+    amp "~0.3.1"
+    amp-message "~0.1.1"
+    debug "^4.2"
+    escape-string-regexp "^4.0.0"
 
 portable-fetch@^3.0.0:
   version "3.0.0"
@@ -5661,6 +5763,14 @@ sodium-native@2.4.6:
     ini "^1.3.5"
     nan "^2.14.0"
     node-gyp-build "^4.1.0"
+
+sodium-native@3.2.0:
+  version "3.2.0"
+  resolved "https://npm.lisk.io/sodium-native/-/sodium-native-3.2.0.tgz#68a9469b96edadffef320cbce51294ad5f72a37f"
+  integrity sha512-8aq/vQSegLwsRch8Sb/Bpf9aAqlNe5dp0+NVhb9UjHv42zDZ0D5zX3wBRUbXK9Ejum9uZE6DUgT4vVLlUFRBWg==
+  dependencies:
+    ini "^1.3.5"
+    node-gyp-build "^4.2.0"
 
 source-map-resolve@^0.5.0:
   version "0.5.3"
@@ -6494,6 +6604,11 @@ ws@7.1.0:
   integrity sha512-Swie2C4fs7CkwlHu1glMePLYJJsWjzhl1vm3ZaLplD0h7OMkZyZ6kLTB/OagiU923bZrPFXuDTeEqaEN4NWG4g==
   dependencies:
     async-limiter "^1.0.0"
+
+ws@7.4.0:
+  version "7.4.0"
+  resolved "https://npm.lisk.io/ws/-/ws-7.4.0.tgz#a5dd76a24197940d4a8bb9e0e152bb4503764da7"
+  integrity sha512-kyFwXuV/5ymf+IXhS6f0+eAFvydbaBW3zjpT6hUdAh/hbVjTIB5EHBGi0bPoCLSK2wcuz3BrEkB9LrYv1Nm4NQ==
 
 ws@^7.2.3:
   version "7.3.1"

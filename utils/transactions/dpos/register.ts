@@ -1,12 +1,11 @@
 import { getPrivateAndPublicKeyFromPassphrase } from '@liskhq/lisk-cryptography';
 import { signTransaction } from '@liskhq/lisk-transactions';
-import { codec } from '@liskhq/lisk-codec';
 
 import {
 	BaseUnsignedTransactionAssetInput,
 	TransactionAssetOutput,
-	getFullAssetSchema,
 	calcMinTxFee,
+	SignedTransactionObject,
 } from '../common';
 
 export const registerAssetSchema = {
@@ -48,11 +47,11 @@ export const register = ({
 		},
 		networkIdentifier,
 		passphrase,
-	);
+	) as unknown as SignedTransactionObject<{ username: string }>;
 
 	return {
-		id: (id as Buffer).toString('hex'),
-		tx: codec.toJSON(getFullAssetSchema(registerAssetSchema), rest),
+		id,
+		tx: rest,
 		minFee: calcMinTxFee(registerAssetSchema, rest),
 	};
 };

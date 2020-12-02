@@ -111,3 +111,7 @@ api_clients/**/
 
 # Use latest config
 config/**/
+
+
+# Cache
+cache/
