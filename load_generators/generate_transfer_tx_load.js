@@ -10,7 +10,7 @@ const exec = async () => {
 
 	const container = new Container({
 		clientMode: 'ipc',
-		connectionString: `${homedir()}/.lisk/devnet`,
+		connectionString: `${homedir()}/.lisk/lisk-core`,
 		genesisAccount: {
 			address: Buffer.from('d04699e57c4a3846c988f3c15306796f8eae5c1c', 'hex'),
 			publicKey: Buffer.from(
@@ -26,7 +26,7 @@ const exec = async () => {
 	await container.bootstrap();
 
 	const allAccounts = container.factory.loadOrGenerateRandomAccounts('benchmarks', maxAccounts);
-	const accounts = allAccounts.slice(0, maxAccounts - 2);
+	const accounts = allAccounts.slice(0, maxAccounts);
 	const accountsNonceMap = {};
 
 	for (const account of accounts) {
@@ -35,7 +35,7 @@ const exec = async () => {
 	}
 
 	for (const account of accounts) {
-		for (let i = 1; i <= maxTransactionsPerAccount - 5; i++) {
+		for (let i = 1; i <= maxTransactionsPerAccount; i++) {
 			const recipient = container.factory.generateRandomAccount();
 			const address = account.address.toString('hex');
 

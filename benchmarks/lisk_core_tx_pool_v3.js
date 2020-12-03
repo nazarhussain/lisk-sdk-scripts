@@ -11,7 +11,7 @@ const config = require(`${liskCorePath}/config/devnet/config.json`);
 
 const app = getApplication(
 	genesisBlock,
-	utils.objects.mergeDeep(config, { forging: { force: false } }),
+	utils.objects.mergeDeep(config, { forging: { force: false }, label: 'lisk-core' }),
 	{
 		enableHTTPAPIPlugin: true,
 		enableForgerPlugin: true,
@@ -272,7 +272,11 @@ const startBenchMark = async txPool => {
 
 			benchMarkResults.push(await benchmarkProcessableTransactions(txPool));
 
-			loadProcess.kill('SIGHUP');
+			await new Promise((resolve, reject) => {
+				loadProcess.on('exit', () => resolve());
+				loadProcess.on('error', error => reject(error));
+				loadProcess.kill('SIGHUP');
+			});
 		}
 	}
 

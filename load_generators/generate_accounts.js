@@ -4,7 +4,7 @@ const { homedir } = require('os');
 const process = async () => {
 	const container = new Container({
 		clientMode: 'ipc',
-		connectionString: `${homedir()}/.lisk/devnet`,
+		connectionString: `${homedir()}/.lisk/lisk-core`,
 		genesisAccount: {
 			address: Buffer.from('d04699e57c4a3846c988f3c15306796f8eae5c1c', 'hex'),
 			publicKey: Buffer.from(
