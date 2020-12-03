@@ -8,10 +8,11 @@ const sleep = async ms => new Promise(resolve => setTimeout(resolve, ms));
 
 config.modules.chain.forging.force = false;
 config.modules.chain.broadcasts.broadcastInterval = 50;
+config.modules.chain.broadcasts.active = false;
 
 const app = new Application(genesisBlock, config);
 
-const testIterations = 1;
+const testIterations = 3;
 const processableCheckDuration = 50;
 const txPayloadLimit = 15 * 1024;
 
@@ -19,12 +20,6 @@ const maxTransactionsBenchMarkValues = [
 	4096,
 	8192,
 	// 10240
-];
-
-const perAccountBenchMarkValues = [
-	64,
-	// 128,
-	// 256
 ];
 
 /**
@@ -60,8 +55,6 @@ const perAccountBenchMarkValues = [
 const aggregateBenchmarkResults = results => {
 	const aggregate = [];
 	const flatResults = [].concat.apply([], results);
-
-	console.log(flatResults);
 
 	for (const maxTransactions of maxTransactionsBenchMarkValues) {
 		const res = flatResults.filter(r => r.maxTransactions === maxTransactions);
@@ -162,9 +155,7 @@ const benchmarkProcessableTransactions = async txPool => {
 			size += transaction.getBytes().length;
 			count += 1;
 		}
-
-		console.log({ size, count, maxTransactions });
-
+		console.info({ size, count });
 		results.push({
 			time: new Date().getTime(),
 			count,
@@ -200,17 +191,15 @@ const startBenchMark = async txPool => {
 	const benchMarkResults = [];
 
 	for (const maxTransactionsLimit of maxTransactionsBenchMarkValues) {
-		for (const perAccountLimit of perAccountBenchMarkValues) {
-			emptyTxPool(txPool);
-			// eslint-disable-next-line no-param-reassign
-			txPool.maxTransactionsPerBlock = maxTransactionsLimit;
-			txPool.maxTransactionsPerQueue = maxTransactionsLimit;
-			txPool.pool._maxTransactionsPerQueue = maxTransactionsLimit;
-			txPool.pool._verifiedTransactionsProcessingLimitPerInterval = maxTransactionsLimit;
-			txPool.pool._pendingTransactionsProcessingLimit = maxTransactionsLimit;
+		emptyTxPool(txPool);
+		// eslint-disable-next-line no-param-reassign
+		txPool.maxTransactionsPerBlock = maxTransactionsLimit;
+		txPool.maxTransactionsPerQueue = maxTransactionsLimit;
+		txPool.pool._maxTransactionsPerQueue = maxTransactionsLimit;
+		txPool.pool._verifiedTransactionsProcessingLimitPerInterval = maxTransactionsLimit;
+		txPool.pool._pendingTransactionsProcessingLimit = maxTransactionsLimit;
 
-			benchMarkResults.push(await benchmarkProcessableTransactions(txPool));
-		}
+		benchMarkResults.push(await benchmarkProcessableTransactions(txPool));
 	}
 
 	return benchMarkResults;

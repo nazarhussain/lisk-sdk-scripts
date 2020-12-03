@@ -275,7 +275,7 @@ const startBenchMark = async txPool => {
 			await new Promise((resolve, reject) => {
 				loadProcess.on('exit', () => resolve());
 				loadProcess.on('error', error => reject(error));
-				loadProcess.kill('SIGHUP');
+				loadProcess.kill('SIGKILL');
 			});
 		}
 	}
