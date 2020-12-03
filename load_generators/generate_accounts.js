@@ -17,7 +17,7 @@ const process = async () => {
 
 	await container.bootstrap();
 
-	const accounts = container.factory.loadOrGenerateRandomAccounts('benchmarks', 100);
+	const accounts = container.factory.loadOrGenerateRandomAccounts('benchmarks', 200);
 	await container.faucet.fundAccounts(accounts, '10000');
 	console.info('Account generation complete....');
 };

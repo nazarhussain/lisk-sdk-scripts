@@ -1,13 +1,13 @@
 const { utils } = require('lisk-sdk');
-const { getApplication } = require('lisk-core/dist/application');
-const genesisBlock = require('lisk-core/config/devnet/genesis_block.json');
-const config = require('lisk-core/config/devnet/config.json');
 const { sleep } = require('../utils/container/common');
-const { Container } = require('../utils/container');
 const childProcess = require('child_process');
 const path = require('path');
 
-/* eslint-disable no-underscore-dangle */
+const [, , liskCorePath] = process.argv;
+
+const { getApplication } = require(`${liskCorePath}/dist/application`);
+const genesisBlock = require(`${liskCorePath}/config/devnet/genesis_block.json`);
+const config = require(`${liskCorePath}/config/devnet/config.json`);
 
 const app = getApplication(
 	genesisBlock,
@@ -202,14 +202,16 @@ const benchmarkProcessableTransactions = async txPool => {
 	const results = [];
 
 	let size = 0;
+	let count = 0;
 
 	while (size < txPayloadLimit) {
 		const transactionsMap = txPool.getProcessableTransactions();
 		const transactions = transactionsMap.values().flat();
-		const count = transactions.length;
+		count = 0;
 		size = 0;
 		for (const transaction of transactions) {
 			size += transaction.getBytes().length;
+			count += 1;
 		}
 
 		results.push({
@@ -258,7 +260,7 @@ const startBenchMark = async txPool => {
 
 			const loadProcess = childProcess.fork(
 				path.join(__dirname, '../load_generators/generate_transfer_tx_load.js'),
-				[],
+				['--unhandled-rejections', 'strict'],
 				{
 					env: {
 						PATH: process.env.PATH,

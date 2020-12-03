@@ -25,8 +25,8 @@ const exec = async () => {
 
 	await container.bootstrap();
 
-	const allAccounts = container.factory.loadOrGenerateRandomAccounts('benchmarks', 100);
-	const accounts = allAccounts.slice(0, maxAccounts);
+	const allAccounts = container.factory.loadOrGenerateRandomAccounts('benchmarks', maxAccounts);
+	const accounts = allAccounts.slice(0, maxAccounts - 2);
 	const accountsNonceMap = {};
 
 	for (const account of accounts) {
@@ -35,7 +35,7 @@ const exec = async () => {
 	}
 
 	for (const account of accounts) {
-		for (let i = 1; i <= maxTransactionsPerAccount; i++) {
+		for (let i = 1; i <= maxTransactionsPerAccount - 5; i++) {
 			const recipient = container.factory.generateRandomAccount();
 			const address = account.address.toString('hex');
 
